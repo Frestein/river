@@ -1,0 +1,316 @@
+jet12: &jet12 JetBrainsMono Nerd Font:pixelsize=12
+jet14: &jet14 JetBrainsMono Nerd Font:pixelsize=14
+jet16: &jet16 JetBrainsMono Nerd Font:pixelsize=16
+nord0: &nord0 2E3440FF
+nord1: &nord1 3B4252FF
+nord2: &nord2 434C5EFF
+nord3: &nord3 4C566AFF
+nord4: &nord4 D8DEE9FF
+nord5: &nord5 E5E9F0FF
+nord6: &nord6 ECEFF4FF
+nord7: &nord7 8FBCBBFF
+nord8: &nord8 88C0D0FF
+nord9: &nord9 81A1C1FF
+nord10: &nord10 5E81ACFF
+nord11: &nord11 BF616AFF
+nord12: &nord12 D08770FF
+nord13: &nord13 EBCB8BFF
+nord14: &nord14 A3BE8CFF
+nord15: &nord15 B48EADFF
+bg_default:
+  &bg_default {
+    stack:
+      [
+        { background: { color: *nord1 } },
+        { underline: { size: 3, color: *nord4 } },
+      ],
+  }
+
+bar:
+  height: 28
+  location: top
+  font: *jet14
+  spacing: 6
+  margin: 0
+  layer: bottom
+  foreground: *nord5
+  background: *nord0
+  border:
+    top-margin: 10
+    left-margin: 10
+    right-margin: 10
+    width: 2
+    color: *nord1
+
+  left:
+    - river:
+        anchors:
+          - base: &river_base
+              left-margin: 10
+              right-margin: 13
+              default: { string: { text: , font: *jet14 } }
+              conditions:
+                id == 1:
+                  {
+                    string:
+                      {
+                        text: ,
+                        font: *jet12,
+                        foreground: *nord14,
+                        right-margin: 3,
+                      },
+                  }
+                id == 2:
+                  {
+                    string:
+                      {
+                        text: ,
+                        font: *jet12,
+                        foreground: *nord13,
+                        right-margin: 3,
+                      },
+                  }
+                id == 3:
+                  { string: { text: 󰈹, font: *jet14, foreground: *nord12 } }
+                id == 4:
+                  {
+                    string:
+                      {
+                        text: ,
+                        font: *jet12,
+                        foreground: *nord11,
+                        right-margin: 1,
+                      },
+                  }
+                id == 5:
+                  { string: { text: , font: *jet12, foreground: *nord15 } }
+                id == 6:
+                  { string: { text: , font: *jet14, foreground: *nord9 } }
+                id == 10:
+                  { string: { text: 󰖲, font: *jet14, foreground: *nord7 } }
+
+        content:
+          map:
+            on-click:
+              left: sh -c "riverctl set-focused-tags $((1 << ({id} - 1)))"
+              right: sh -c "riverctl toggle-focused-tags $((1 << ({id} -1)))"
+              middle: sh -c "riverctl toggle-view-tags $((1 << ({id} -1)))"
+            conditions:
+              state == urgent:
+                map:
+                  <<: *river_base
+                  deco: { background: { color: *nord15 } }
+              state == focused:
+                map:
+                  <<: *river_base
+                  deco: *bg_default
+              state == visible && ~occupied:
+                map:
+                  <<: *river_base
+              state == visible && occupied:
+                map:
+                  <<: *river_base
+                  deco: *bg_default
+              state == unfocused:
+                map:
+                  <<: *river_base
+              state == invisible && ~occupied: { empty: {} }
+              state == invisible && occupied:
+                map:
+                  <<: *river_base
+                  deco: { underline: { size: 3, color: *nord9 } }
+  right:
+    - pipewire:
+        anchors:
+          volume: &volume
+            conditions:
+              type == "sink" && muted:
+                string:
+                  {
+                    text: "{cubic_volume}%",
+                    foreground: *nord11,
+                    left-margin: 10,
+                  }
+              type == "sink" && ~muted:
+                string:
+                  {
+                    text: "{cubic_volume}%",
+                    foreground: *nord9,
+                    left-margin: 10,
+                  }
+        content:
+          list:
+            items:
+              - map:
+                  conditions:
+                    type == "sink":
+                      map:
+                        conditions:
+                          muted:
+                            string:
+                              {
+                                text: 󰝟,
+                                font: *jet16,
+                                foreground: *nord0,
+                                deco: { background: { color: *nord9 } },
+                                left-margin: 10,
+                                right-margin: 14,
+                              }
+                        default:
+                          - ramp:
+                              tag: cubic_volume
+                              items:
+                                - string:
+                                    {
+                                      text: 󰕿,
+                                      font: *jet16,
+                                      foreground: *nord0,
+                                      deco: { background: { color: *nord9 } },
+                                      left-margin: 10,
+                                      right-margin: 14,
+                                    }
+                                - string:
+                                    {
+                                      text: 󰖀,
+                                      font: *jet16,
+                                      foreground: *nord0,
+                                      deco: { background: { color: *nord9 } },
+                                      left-margin: 10,
+                                      right-margin: 14,
+                                    }
+                                - string:
+                                    {
+                                      text: 󰕾,
+                                      font: *jet16,
+                                      foreground: *nord0,
+                                      deco: { background: { color: *nord9 } },
+                                      left-margin: 10,
+                                      right-margin: 14,
+                                    }
+              - map:
+                  <<: *volume
+    - network:
+        poll-interval: 5000
+        content:
+          map:
+            default: { empty: {} }
+            conditions:
+              name == enp0s31f6:
+                map:
+                  default:
+                    {
+                      string:
+                        {
+                          text: ,
+                          font: *jet12,
+                          foreground: *nord0,
+                          deco: { background: { color: *nord10 } },
+                          left-margin: 10,
+                          right-margin: 17,
+                        },
+                    }
+                  conditions:
+                    state == down:
+                      {
+                        string:
+                          {
+                            text: ,
+                            font: *jet12,
+                            foreground: *nord0,
+                            deco: { background: { color: *nord10 } },
+                            left-margin: 10,
+                            right-margin: 17,
+                          },
+                      }
+                    state == up:
+                      map:
+                        default:
+                          - string:
+                              {
+                                text: ,
+                                font: *jet12,
+                                foreground: *nord0,
+                                deco: { background: { color: *nord10 } },
+                                left-margin: 10,
+                                right-margin: 17,
+                              }
+                          - string:
+                              {
+                                text: "{ssid} {dl-speed:mb}/{ul-speed:mb} Mb/s",
+                                foreground: *nord10,
+                              }
+                        conditions:
+                          ipv4 == "":
+                            - string:
+                                {
+                                  text: ,
+                                  font: *jet12,
+                                  foreground: *nord0,
+                                  deco: { background: { color: *nord10 } },
+                                  left-margin: 10,
+                                  right-margin: 17,
+                                }
+                            - string:
+                                {
+                                  text: "{ssid} {dl-speed:mb}/{ul-speed:mb} Mb/s",
+                                  foreground: *nord10,
+                                }
+    - mem:
+        poll-interval: 5000
+        content:
+          - string:
+              {
+                text: ,
+                font: *jet12,
+                foreground: *nord0,
+                deco: { background: { color: *nord11 } },
+                left-margin: 10,
+                right-margin: 14,
+              }
+          - string:
+              {
+                text: "{used:gb}/{total:gb} Gb",
+                foreground: *nord11,
+                left-margin: 10,
+              }
+    - cpu:
+        poll-interval: 5000
+        content:
+          map:
+            conditions:
+              id < 0:
+                - string:
+                    {
+                      text: 󰍛,
+                      font: *jet16,
+                      foreground: *nord0,
+                      deco: { background: { color: *nord12 } },
+                      left-margin: 10,
+                      right-margin: 12,
+                    }
+                - string:
+                    { text: "{cpu}%", foreground: *nord12, left-margin: 10 }
+    - clock:
+        time-format: "%I:%M"
+        date-format: "%m/%d/%Y"
+        content:
+          - string:
+              {
+                text: ,
+                font: *jet12,
+                foreground: *nord0,
+                deco: { background: { color: *nord13 } },
+                left-margin: 10,
+                right-margin: 13,
+              }
+          - string: { text: "{date}", foreground: *nord13, margin: 10 }
+          - string:
+              {
+                text: ,
+                font: *jet12,
+                foreground: *nord0,
+                deco: { background: { color: *nord14 } },
+                left-margin: 10,
+                right-margin: 14,
+              }
+          - string: { text: "{time}", foreground: *nord14, margin: 10 }
