@@ -26,7 +26,7 @@ notify_view() {
 
 # copy screenshot to clipboard
 copy_shot() {
-  tee "$dir/$file" | xclip -selection clipboard -t image/png
+  tee "$dir/$file" | wl-copy --type image/png
 }
 
 # countdown
@@ -61,20 +61,6 @@ shot10() {
   shot screen
 }
 
-shotwin() {
-  TMP_WINDOW_ID=$(xdotool selectwindow)
-      
-  unset WINDOW X Y WIDTH HEIGHT SCREEN
-  eval $(xdotool getwindowgeometry --shell "${TMP_WINDOW_ID}")
-  
-  # Put the window in focus
-  xdotool windowfocus --sync "${TMP_WINDOW_ID}"
-  sleep 0.05
-  
-  # run flameshot in gui mode in the desired coordinates
-  shot gui --region "${WIDTH}x${HEIGHT}+${X}+${Y}"
-}
-
 shotarea() {
   shot gui
 }
@@ -86,12 +72,10 @@ elif [[ "$1" == "--in5" ]]; then
   shot5
 elif [[ "$1" == "--in10" ]]; then
   shot10
-elif [[ "$1" == "--win" ]]; then
-  shotwin
 elif [[ "$1" == "--area" ]]; then
   shotarea
 else
-  echo -e "Available Options : --now --in5 --in10 --win --area"
+  echo -e "Available Options : --now --in5 --in10 --area"
 fi
 
 exit 0

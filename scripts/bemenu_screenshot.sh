@@ -16,7 +16,7 @@
   }
   # copy screenshot to clipboard
   copy_shot() {
-    tee "$dir/$file" | xclip -selection clipboard -t image/png
+    tee "$dir/$file" | wl-copy --type image/png
   }
   # countdown
   countdown() {
@@ -28,7 +28,7 @@
   # a function to get custom value as input. Gets one string as input to be
   # used as message.
   func_get_input() {
-    echo | dmenu -p "${1}"
+    echo | bemenu -p "${1}"
   }
   # a function to read and parse config file. the input should be tha path to
   # the config file.
@@ -146,16 +146,14 @@ EOF
   }
 }
 
-screenshot_type=$(echo -e "Instant\nTimer" | dmenu -l 2 -vi -noi -p "Screenshot type ")
+screenshot_type=$(echo -e "Instant\nTimer" | LD_LIBRARY_PATH=/usr/local/lib bemenu -p 'Screenshot type                             ' -l 2 -c -i --fn 'JetBrainsMono Nerd Font 16' -B 2 -M 670 -s --binding vim --vim-normal-mode --vim-esc-exits --tb '#81A1C1' --tf '#2E3440' --fb '#2E3440' --ff '#D8DEE9' --nb '#2E3440' --nf '#D8DEE9' --ab '#2E3440' --af '#D8DEE9' --hb '#81A1C1' --hf '#2E3440' --sb '#434C5E' --sf '#B48EAD' --scb '#2E3440' --scf '#D8DEE9' --cb '#434C5E' --cf '#D8DEE9' --bdr '#81A1C1')
 
 case $screenshot_type in "Instant")
 
   RET=$(echo -e "Trim\nSelect window\nRemove white\nBordered\nScaled" |
-    dmenu -i \
-      -vi \
-      -l 10 \
-      -noi \
-      -p "Screenshot")
+    LD_LIBRARY_PATH=/usr/local/lib bemenu -l 10 \
+    -p "Screenshot" \
+    -c -i --fn 'JetBrainsMono Nerd Font 16' -B 2 -M 670 -s --binding vim --vim-normal-mode --vim-esc-exits --tb '#81A1C1' --tf '#2E3440' --fb '#2E3440' --ff '#D8DEE9' --nb '#2E3440' --nf '#D8DEE9' --ab '#2E3440' --af '#D8DEE9' --hb '#81A1C1' --hf '#2E3440' --sb '#434C5E' --sf '#B48EAD' --scb '#2E3440' --scf '#D8DEE9' --cb '#434C5E' --cf '#D8DEE9' --bdr '#81A1C1')
 
   sleep 0.1
 

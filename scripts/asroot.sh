@@ -1,9 +1,10 @@
 #!/bin/sh
 
-rdir="$HOME/.config/river"
+# River directory
+dir="$HOME/.config/river"
 
-# rofi sudo askpass helper
-export SUDO_ASKPASS="$rdir/scripts/bemenu_askpass"
+# Bemenu sudo askpass helper
+export SUDO_ASKPASS="$dir/scripts/bemenu_askpass"
 
-# execute the application
+# Execute the application
 sudo -A $1

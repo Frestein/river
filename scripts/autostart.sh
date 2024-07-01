@@ -1,21 +1,23 @@
 #!/bin/sh
 
-# Qtile directory
-rdir="$HOME/.config/river"
-
-# Lauch notification daemon
-"$rdir/scripts/dunst.sh"
+# River directory
+dir="$HOME/.config/river"
 
 # Launch statusbar
-yambar -c "$rdir/yambar/config.yml" &
+"$dir/scripts/yambar.sh"
 
 # Set wallpaper
-swww-daemon &
+"$dir/scripts/swww.sh"
 
-swww img "$rdir/themes/nord/wallpaper" &
+# Lauch notification daemon
+"$dir/scripts/dunst.sh"
 
 ## Mount Google Drive
-rclone mount --daemon GoogleDriveMain: "$HOME/Google Drive" &
+if [[ ! $(pidof rclone) ]]; then
+  rclone mount --daemon GoogleDriveMain: "$HOME/Google Drive" &
+fi
 
-## Launch jamesdsp
-jamesdsp -t &
+# Launch jamesdsp
+if [[ ! $(pidof jamesdsp) ]]; then
+  jamesdsp -t &
+fi

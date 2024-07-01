@@ -1,11 +1,12 @@
 #!/bin/sh
 
 # River directory
-rdir="$HOME/.config/river"
+dir="$HOME/.config/river"
 
-# Launch dunst daemon
+# Kill launched dunst daemon
 if [[ $(pidof dunst) ]]; then
   pkill dunst
 fi
 
-dunst -config "$rdir/dunstrc" &
+# Launch dunst daemon
+dunst -config "$dir/dunstrc" &
