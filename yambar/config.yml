@@ -99,7 +99,7 @@ bar:
               state == urgent:
                 map:
                   <<: *river_base
-                  deco: { background: { color: *nord15 } }
+                  deco: { underline: { size: 3, color: *nord15 } }
               state == focused:
                 map:
                   <<: *river_base
