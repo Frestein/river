@@ -123,6 +123,11 @@ bar:
     - pipewire:
         anchors:
           volume: &volume
+            on-click:
+              left: "~/.config/river/scripts/volume.sh --toggle"
+              right: "pavucontrol"
+              wheel-up: "~/.config/river/scripts/volume.sh --inc"
+              wheel-down: "~/.config/river/scripts/volume.sh --dec"
             conditions:
               type == "sink" && muted:
                 string:
@@ -142,6 +147,11 @@ bar:
           list:
             items:
               - map:
+                  on-click:
+                    left: "~/.config/river/scripts/volume.sh --toggle"
+                    right: "pavucontrol"
+                    wheel-up: "~/.config/river/scripts/volume.sh --inc"
+                    wheel-down: "~/.config/river/scripts/volume.sh --dec"
                   conditions:
                     type == "sink":
                       map:
@@ -194,6 +204,8 @@ bar:
         content:
           map:
             default: { empty: {} }
+            on-click:
+              left: "~/.config/river/scripts/networkmanager.py"
             conditions:
               name == enp0s31f6:
                 map:
