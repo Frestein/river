@@ -15,6 +15,7 @@ dir=$HOME/.config/river
 
 volume="$dir/scripts/volume.sh"
 downloader="$dir/scripts/bemenu_downloader.sh"
+colorpicker="$dir/scripts/colorpicker.sh"
 screenshot="$dir/scripts/screenshot.sh"
 bemenu_screenshot="$dir/scripts/bemenu_screenshot.sh"
 networkmanager="$dir/scripts/networkmanager.py"
@@ -175,6 +176,8 @@ do
     riverctl map $mode None XF86AudioPlay  spawn 'playerctl play-pause'
     riverctl map $mode None XF86AudioStop  spawn 'playerctl stop'
 done
+
+riverctl map normal Alt P spawn "$colorpicker"
 
 # Screenshot {{{
 

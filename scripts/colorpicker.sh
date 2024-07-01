@@ -1,6 +1,6 @@
 #!/bin/sh
 
-color=$(xcolor --format hex --preview-size 255 --scale 10)
+color=$(slurp -p | grim -g - - | magick - txt: | awk 'NR==2 { print $3 }')
 image=/tmp/${color}.png
 
 if [[ "$color" ]]; then
