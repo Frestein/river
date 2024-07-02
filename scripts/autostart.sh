@@ -7,7 +7,7 @@ dir="$HOME/.config/river"
 "$dir/scripts/yambar.sh"
 
 # Set wallpaper
-"$dir/scripts/swww.sh"
+wbg "$dir/themes/nord/wallpaper" &
 
 # Lauch notification daemon
 "$dir/scripts/dunst.sh"
