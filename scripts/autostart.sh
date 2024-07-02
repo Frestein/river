@@ -3,14 +3,23 @@
 # River directory
 dir="$HOME/.config/river"
 
-# Launch statusbar
-"$dir/scripts/yambar.sh"
+# Lauch statusbar
+if [[ $(pidof yambar) ]]; then
+  pkill yambar
+fi
+yambar -c "$dir/yambar/config.yml" &
 
 # Set wallpaper
+if [[ $(pidof wbg) ]]; then
+  pkill wbg
+fi
 wbg "$dir/themes/nord/wallpaper" &
 
-# Lauch notification daemon
-"$dir/scripts/dunst.sh"
+# Launch dunst daemon
+if [[ $(pidof dunst) ]]; then
+  pkill dunst
+fi
+dunst -config "$dir/dunstrc" &
 
 ## Mount Google Drive
 if [[ ! $(pidof rclone) ]]; then
