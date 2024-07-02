@@ -218,6 +218,22 @@ riverctl map normal Super S spawn $bemenu_screenshot
 riverctl rule-add -app-id "float" float
 
 # }}}
+# Server Side Decorations (SSD) {{{
+
+riverctl rule-add -app-id "firefox" ssd
+riverctl rule-add -app-id "piper" ssd
+riverctl rule-add -app-id "steam" ssd
+riverctl rule-add -app-id "nemo" ssd
+riverctl rule-add -app-id "mpv" ssd
+riverctl rule-add -app-id "avahi*" ssd
+riverctl rule-add -app-id "*Meld*" ssd
+riverctl rule-add -app-id "lutris" ssd
+riverctl rule-add -app-id "Waydroid" ssd
+riverctl rule-add -app-id "galculator" ssd
+riverctl rule-add -app-id "*telegram*" ssd
+riverctl rule-add -app-id "*pavucontrol*" ssd
+
+# }}}
 
 # Set background and border color
 riverctl background-color 0x2E3440
