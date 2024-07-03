@@ -251,10 +251,16 @@ riverctl default-layout rivertile
 rivertile -view-padding 6 -outer-padding 6 &
 
 # }}}
-# Rules {{{
+# Float {{{
 
-# Make any app with "float" in its app-id float
-riverctl rule-add -app-id "*float*" float
+declare -a float_apps=(
+    "*float*"
+    "galculator"
+)
+
+for float_app in "${float_apps[@]}"; do
+    riverctl rule-add -app-id "$float_app" float
+done
 
 # }}}
 # River colors {{{
