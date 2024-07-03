@@ -3,6 +3,9 @@
 # River directory
 dir="$HOME/.config/river"
 
+# Fix the non-working xdg-desktop-portal-gtk service
+systemctl --user import-environment
+
 # Lauch statusbar
 if [[ $(pidof yambar) ]]; then
   pkill yambar
