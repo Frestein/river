@@ -1,6 +1,7 @@
 jet12: &jet12 JetBrainsMono Nerd Font:pixelsize=12
 jet14: &jet14 JetBrainsMono Nerd Font:pixelsize=14
 jet16: &jet16 JetBrainsMono Nerd Font:pixelsize=16
+jet18: &jet18 JetBrainsMono Nerd Font:pixelsize=18
 nord0: &nord0 2E3440FF
 nord1: &nord1 3B4252FF
 nord2: &nord2 434C5EFF
@@ -22,7 +23,7 @@ bg_default:
     stack:
       [
         { background: { color: *nord1 } },
-        { underline: { size: 3, color: *nord4 } },
+        { underline: { size: 3, color: *nord3 } },
       ],
   }
 
@@ -48,7 +49,11 @@ bar:
           - base: &river_base
               left-margin: 10
               right-margin: 13
-              default: { string: { text: , font: *jet14 } }
+              default:
+                {
+                  string:
+                    { text: , font: *jet14, left-margin: 1, right-margin: 3 },
+                }
               conditions:
                 id == 1:
                   {
@@ -57,7 +62,7 @@ bar:
                         text: ,
                         font: *jet12,
                         foreground: *nord14,
-                        right-margin: 3,
+                        right-margin: 5,
                       },
                   }
                 id == 2:
@@ -67,11 +72,14 @@ bar:
                         text: ,
                         font: *jet12,
                         foreground: *nord13,
-                        right-margin: 3,
+                        right-margin: 5,
                       },
                   }
                 id == 3:
-                  { string: { text: 󰈹, font: *jet14, foreground: *nord12 } }
+                  {
+                    string:
+                      { text: 󰈹, font: *jet14, foreground: *nord12, margin: 2 },
+                  }
                 id == 4:
                   {
                     string:
@@ -79,15 +87,43 @@ bar:
                         text: ,
                         font: *jet12,
                         foreground: *nord11,
-                        right-margin: 1,
+                        left-margin: 2,
+                        right-margin: 3,
                       },
                   }
                 id == 5:
-                  { string: { text: , font: *jet12, foreground: *nord15 } }
+                  {
+                    string:
+                      {
+                        text: ,
+                        font: *jet12,
+                        foreground: *nord15,
+                        left-margin: 2,
+                        right-margin: 3,
+                      },
+                  }
                 id == 6:
-                  { string: { text: , font: *jet14, foreground: *nord9 } }
+                  {
+                    string:
+                      {
+                        text: ,
+                        font: *jet14,
+                        foreground: *nord9,
+                        left-margin: 1,
+                        right-margin: 3,
+                      },
+                  }
                 id == 10:
-                  { string: { text: 󰖲, font: *jet14, foreground: *nord7 } }
+                  {
+                    string:
+                      {
+                        text: 󰖲,
+                        font: *jet14,
+                        foreground: *nord7,
+                        left-margin: 3,
+                        right-margin: 1,
+                      },
+                  }
 
         content:
           map:
@@ -99,7 +135,7 @@ bar:
               state == urgent:
                 map:
                   <<: *river_base
-                  deco: { underline: { size: 3, color: *nord15 } }
+                  deco: { underline: { size: 3, color: *nord14 } }
               state == focused:
                 map:
                   <<: *river_base
@@ -120,6 +156,33 @@ bar:
                   <<: *river_base
                   deco: { underline: { size: 3, color: *nord9 } }
   right:
+    - mpd:
+        host: "/run/user/1000/mpd/socket"
+        content:
+          map:
+            default: { empty: {} }
+            on-click:
+              left: "mpc toggle"
+              right: "footclient --app-id 'footclient-float' --window-size-pixels 800x400 ncmpcpp -s visualizer -S playlist"
+              wheel-up: "mpc next"
+              wheel-down: "mpc prev"
+            conditions:
+              state == playing || state == paused:
+                - string:
+                    {
+                      text: ,
+                      font: *jet14,
+                      foreground: *nord0,
+                      deco: { background: { color: *nord8 } },
+                      left-margin: 11,
+                      right-margin: 15,
+                    }
+                - string:
+                    {
+                      text: "{artist} - {title}",
+                      foreground: *nord8,
+                      left-margin: 10,
+                    }
     - pipewire:
         anchors:
           volume: &volume
@@ -273,11 +336,11 @@ bar:
           - string:
               {
                 text: ,
-                font: *jet12,
+                font: *jet14,
                 foreground: *nord0,
                 deco: { background: { color: *nord11 } },
                 left-margin: 10,
-                right-margin: 14,
+                right-margin: 15,
               }
           - string:
               {
@@ -294,11 +357,11 @@ bar:
                 - string:
                     {
                       text: 󰍛,
-                      font: *jet16,
+                      font: *jet18,
                       foreground: *nord0,
                       deco: { background: { color: *nord12 } },
                       left-margin: 10,
-                      right-margin: 12,
+                      right-margin: 13,
                     }
                 - string:
                     { text: "{cpu}%", foreground: *nord12, left-margin: 10 }
@@ -308,21 +371,21 @@ bar:
         content:
           - string:
               {
-                text: ,
-                font: *jet12,
+                text: ,
+                font: *jet14,
                 foreground: *nord0,
                 deco: { background: { color: *nord13 } },
-                left-margin: 10,
-                right-margin: 13,
+                left-margin: 11,
+                right-margin: 14,
               }
           - string: { text: "{date}", foreground: *nord13, margin: 10 }
           - string:
               {
-                text: ,
+                text: ,
                 font: *jet12,
                 foreground: *nord0,
                 deco: { background: { color: *nord14 } },
-                left-margin: 10,
-                right-margin: 14,
+                left-margin: 11,
+                right-margin: 15,
               }
           - string: { text: "{time}", foreground: *nord14, margin: 10 }
