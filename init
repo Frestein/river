@@ -251,7 +251,7 @@ riverctl default-layout rivertile
 rivertile -view-padding 6 -outer-padding 6 &
 
 # }}}
-# Float {{{
+# Float rules {{{
 
 declare -a float_apps=(
     "*float*"
@@ -260,6 +260,34 @@ declare -a float_apps=(
 
 for float_app in "${float_apps[@]}"; do
     riverctl rule-add -app-id "$float_app" float
+done
+
+# }}}
+# Tags rules {{{
+
+# Tag 1 - Terminal multiplexer and session manager
+riverctl rule-add -app-id "footclient-zellij" tags $((1 << 0))
+ 
+# Tag 2 - IDE and dev-tools
+riverctl rule-add -app-id "*jetbrains*" tags $((1 << 1))
+
+# Tag 3 - Web Browser
+riverctl rule-add -app-id "firefox" tags $((1 << 2))
+
+# Tag 4 - File manager
+riverctl rule-add -app-id "nemo" tags $((1 << 3))
+
+# Tag 5 - Documents
+riverctl rule-add -app-id "zathura" tags $((1 << 4))
+
+# Tag 6 - Gaming applications
+declare -a tag6_apps=(
+    "steam"
+    "lutris"
+)
+
+for tag6_app in "${tag6_apps[@]}"; do
+    riverctl rule-add -app-id "$tag6_app" tags $((1 << 5))
 done
 
 # }}}
