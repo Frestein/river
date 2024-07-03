@@ -28,42 +28,7 @@
   # a function to get custom value as input. Gets one string as input to be
   # used as message.
   func_get_input() {
-    echo | bemenu -p "${1}"
-  }
-  # a function to read and parse config file. the input should be tha path to
-  # the config file.
-  func_parse_config() {
-    local line section key value
-    local regex_empty="^[[:blank:]]*$"
-    local regex_comment="^[[:blank:]]*#"
-    local regex_section="^[[:blank:]]*\[([[:alpha:]][[:alnum:]]*)\][[:blank:]]*$"
-    local regex_keyval="^[[:blank:]]*([[:alpha:]_][[:alnum:]_]*)[[:blank:]]*=[[:blank:]]*[\"\']?([^\"\']*)[\"\']?"
-
-    # read the lines line-by-line and create variables using the config
-    while IFS='= ' read -r line; do
-      # skip if the line is empty
-      [[ "${line}" =~ ${regex_empty} ]] && continue
-      # skip if the line is comment
-      [[ "${line}" =~ ${regex_comment} ]] && continue
-      # if the line matches regex for section
-      if [[ "${line}" =~ ${regex_section} ]]; then
-        section="${BASH_REMATCH[1]}"
-        # echo "section=${section}"
-      # if the line matches regex for key-value pair
-      elif [[ "${line}" =~ ${regex_keyval} ]]; then
-        key="${BASH_REMATCH[1]}"
-        value="${BASH_REMATCH[2]}"
-        # echo "${key} = ${value}"
-      # if the line does not match any of the above
-      else
-        echo "The following line in config is invalid:"
-        echo "${line}"
-      fi
-
-      # create varible synamically using the combination of section and key
-      declare -g "config_${section}_${key}"="${value}"
-
-    done <"${1}"
+    echo | LD_LIBRARY_PATH=/usr/local/lib bemenu -p "${1}" -c -i --fn 'JetBrainsMono Nerd Font 16' -B 2 -M 670 -s --binding vim --vim-esc-exits --tb '#81A1C1' --tf '#2E3440' --fb '#2E3440' --ff '#D8DEE9' --nb '#2E3440' --nf '#D8DEE9' --ab '#2E3440' --af '#D8DEE9' --hb '#2E3440' --hf '#2E3440' --sb '#434C5E' --sf '#B48EAD' --scb '#2E3440' --scf '#D8DEE9' --cb '#434C5E' --cf '#D8DEE9' --bdr '#81A1C1'
   }
 }
 
@@ -110,25 +75,6 @@ EOF
       config_action_bordered_line_thickness=2
       config_action_bordered_corner_radius=1
     }
-  }
-
-  #-------[ read config file ]-------#
-  {
-    # get the config path from environmental variable, otherwise fall back to
-    # the ~/.config/dmenu_shot/config.toml
-    if [[ -v DMENU_SHOT_CONF_PATH ]]; then
-      CONF_PATH="${DMENU_SHOT_CONF_PATH}"
-    else
-      CONF_PATH="${HOME}/.config/dmenu_shot/config.toml"
-    fi
-
-    # if the config file do exist
-    if [[ -f "${CONF_PATH}" ]]; then
-      func_parse_config "${CONF_PATH}"
-    else
-      echo "The config file was not found in ${CONF_PATH}"
-      echo "Falling back to some defaults!"
-    fi
   }
 
   #-------------[ file ]--------------#
@@ -228,14 +174,14 @@ case $screenshot_type in "Instant")
   esac
   ;;
 "Timer")
-  countdown_time=$(func_get_input "Countdown (in seconds)")
+  countdown_time=$(func_get_input "Countdown")
   # Check if countdown_time is a number and greater than 0
   if [[ "$countdown_time" =~ ^[0-9]+$ ]] && [ "$countdown_time" -gt 0 ]; then
       countdown $countdown_time
       flameshot gui -r | copy_shot
       notify_view
   else
-      dunstify -u low -h string:x-dunst-stack-tag:obscreenshot -i /usr/share/archcraft/icons/dunst/picture.png "Invalid countdown time. Skipping screenshot."
+      dunstify -u low -h string:x-dunst-stack-tag:obscreenshot -i /usr/share/archcraft/icons/dunst/picture.png "Invalid countdown time."
   fi
   ;;
 *) ;;

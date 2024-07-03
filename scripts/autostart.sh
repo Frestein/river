@@ -30,3 +30,23 @@ fi
 if [[ ! $(pidof jamesdsp) ]]; then
   jamesdsp -t &
 fi
+
+# Launch foot server
+if [[ ! $(pidof foot) ]]; then
+  foot --server &
+fi
+
+# Launch swayidle
+if [[ ! $(pidof swayidle) ]]; then
+  swayidle -w \
+    timeout 300 "$dir/scripts/waylock.sh" &
+fi
+
+# Launch mpd with playerctl mpd-mpris plugin
+if [[ ! $(pidof mpd) ]]; then
+  mpd &
+  wait $!
+  mpd-mpris &
+elif [[ ! $(pidof mpd-mpris) ]]; then
+  mpd-mpris &
+fi
