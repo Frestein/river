@@ -262,6 +262,8 @@ for float_app in "${float_apps[@]}"; do
     riverctl rule-add -app-id "$float_app" float
 done
 
+riverctl rule-add -app-id "firefox" -title "Library" float
+
 # }}}
 # Tags rules {{{
 
