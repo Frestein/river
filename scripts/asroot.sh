@@ -3,8 +3,8 @@
 # River directory
 dir="$HOME/.config/river"
 
-# Bemenu sudo askpass helper
-export SUDO_ASKPASS="$dir/scripts/bemenu_askpass"
+# Export sudo askpass helper
+export SUDO_ASKPASS="$dir/scripts/fuzzel_askpass.sh"
 
 # Execute the application
-sudo -A $1
+sudo -A env XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" WAYLAND_DISPLAY="$WAYLAND_DISPLAY" $@

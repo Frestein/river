@@ -28,7 +28,7 @@
   # a function to get custom value as input. Gets one string as input to be
   # used as message.
   func_get_input() {
-    echo | LD_LIBRARY_PATH=/usr/local/lib bemenu -p "${1}" -c -i --fn 'JetBrainsMono Nerd Font 16' -B 2 -M 670 -s --binding vim --vim-esc-exits --tb '#81A1C1' --tf '#2E3440' --fb '#2E3440' --ff '#D8DEE9' --nb '#2E3440' --nf '#D8DEE9' --ab '#2E3440' --af '#D8DEE9' --hb '#2E3440' --hf '#2E3440' --sb '#434C5E' --sf '#B48EAD' --scb '#2E3440' --scf '#D8DEE9' --cb '#434C5E' --cf '#D8DEE9' --bdr '#81A1C1'
+    echo | fuzzel -d -p "${1}" -l 0 -P 0
   }
 }
 
@@ -37,7 +37,7 @@
   if [[ "${1}" == "--help" ]] || [[ "${1}" == "-h" ]] || [[ "${1}" == "help" ]]; then
     cat <<'EOF'
 
-dmenu_shot provides a menu with set of custom commands to
+fuzzel_screenshot provides a menu with set of custom commands to
 perform some simple automated image manipulation on screenshots
 taken using Flameshot, and then putting them into clipboard.
 
@@ -92,14 +92,13 @@ EOF
   }
 }
 
-screenshot_type=$(echo -e "Instant\nTimer" | LD_LIBRARY_PATH=/usr/local/lib bemenu -p 'Screenshot type                             ' -l 2 -c -i --fn 'JetBrainsMono Nerd Font 16' -B 2 -M 670 -s --binding vim --vim-normal-mode --vim-esc-exits --tb '#81A1C1' --tf '#2E3440' --fb '#2E3440' --ff '#D8DEE9' --nb '#2E3440' --nf '#D8DEE9' --ab '#2E3440' --af '#D8DEE9' --hb '#81A1C1' --hf '#2E3440' --sb '#434C5E' --sf '#B48EAD' --scb '#2E3440' --scf '#D8DEE9' --cb '#434C5E' --cf '#D8DEE9' --bdr '#81A1C1')
+screenshot_type=$(echo -e "Instant\nTimer" | fuzzel -d -p 'Screenshot type ' -l 2)
 
 case $screenshot_type in "Instant")
 
   RET=$(echo -e "Trim\nSelect window\nRemove white\nBordered\nScaled" |
-    LD_LIBRARY_PATH=/usr/local/lib bemenu -l 10 \
-    -p "Screenshot" \
-    -c -i --fn 'JetBrainsMono Nerd Font 16' -B 2 -M 670 -s --binding vim --vim-normal-mode --vim-esc-exits --tb '#81A1C1' --tf '#2E3440' --fb '#2E3440' --ff '#D8DEE9' --nb '#2E3440' --nf '#D8DEE9' --ab '#2E3440' --af '#D8DEE9' --hb '#81A1C1' --hf '#2E3440' --sb '#434C5E' --sf '#B48EAD' --scb '#2E3440' --scf '#D8DEE9' --cb '#434C5E' --cf '#D8DEE9' --bdr '#81A1C1')
+    fuzzel -d -l 5 \
+    -p "Screenshot ")
 
   sleep 0.1
 
@@ -150,7 +149,7 @@ case $screenshot_type in "Instant")
   Scaled)
     while :; do
       # get the value from user
-      tmp_size=$(func_get_input "Resize (75%, 200x300)")
+      tmp_size=$(func_get_input "Resize (75%, 200x300) ")
       # remove spaces (can happen by accident
       tmp_size=$(echo "${tmp_size}" | sed 's/ //g')
       # make sure the variable is not empty
@@ -174,7 +173,7 @@ case $screenshot_type in "Instant")
   esac
   ;;
 "Timer")
-  countdown_time=$(func_get_input "Countdown")
+  countdown_time=$(func_get_input "Countdown ")
   # Check if countdown_time is a number and greater than 0
   if [[ "$countdown_time" =~ ^[0-9]+$ ]] && [ "$countdown_time" -gt 0 ]; then
       countdown $countdown_time

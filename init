@@ -16,14 +16,14 @@ dir=$HOME/.config/river
 # Imports
 volume="$dir/scripts/volume.sh"
 waylock="$dir/scripts/waylock.sh"
-downloader="$dir/scripts/bemenu_downloader.sh"
+downloader="$dir/scripts/fuzzel_downloader.sh"
 colorpicker="$dir/scripts/colorpicker.sh"
 screenshot="$dir/scripts/screenshot.sh"
-screenshoter="$dir/scripts/bemenu_screenshoter.sh"
+screenshoter="$dir/scripts/fuzzel_screenshoter.sh"
 networkmanager="$dir/scripts/networkmanager.py"
-
-# Options
-bemenu_opts="-c -i -l 10 --fn 'JetBrainsMono Nerd Font 16' -B 2 -M 670 -s --fixed-height --binding vim --vim-normal-mode --vim-esc-exits --tb '#81A1C1' --tf '#2E3440' --fb '#2E3440' --ff '#D8DEE9' --nb '#2E3440' --nf '#D8DEE9' --ab '#2E3440' --af '#D8DEE9' --hb '#81A1C1' --hf '#2E3440' --sb '#434C5E' --sf '#B48EAD' --scb '#2E3440' --scf '#D8DEE9' --cb '#434C5E' --cf '#D8DEE9' --bdr '#81A1C1'"
+sessionmanager="$dir/scripts/fuzzel_sessionmanager.sh"
+runner="$dir/scripts/fuzzel_drun.sh"
+asroot="$dir/scripts/fuzzel_asroot.sh"
 
 # }}}
 # Autostart {{{
@@ -199,12 +199,15 @@ riverctl map -layout 0 normal Shift Print   spawn "$screenshot --in10"
 # Super + Print to take screenshot of selected area
 riverctl map -layout 0 normal Super Print   spawn "$screenshot --area"
 
-### Bemenu applets ----------------------------------------
+### Applets -----------------------------------------------
 # Alt + F1 to open the app launcher applet
-riverctl map -layout 0 normal Alt F1  spawn "j4-dmenu-desktop --dmenu=\"LD_LIBRARY_PATH=/usr/local/lib bemenu -p Apps --fixed-height $bemenu_opts\""
+riverctl map -layout 0 normal Alt F1  spawn "fuzzel -p 'Apps '"
 
 # Super + R to open the app runner applet
-riverctl map -layout 0 normal Super R spawn "LD_LIBRARY_PATH=/usr/local/lib bemenu-run -p \"󰜎\" --fixed-height $bemenu_opts"
+riverctl map -layout 0 normal Super R spawn $runner
+
+# Alt + R to open the app runner applet
+riverctl map -layout 0 normal Alt R spawn $asroot
 
 # Super + N to open the network manager applet
 riverctl map -layout 0 normal Super N spawn $networkmanager
@@ -214,6 +217,9 @@ riverctl map -layout 0 normal Super D spawn $downloader
 
 # Super + S to open the screenshoter applet
 riverctl map -layout 0 normal Super S spawn $screenshoter
+
+# Super + Q to open the network manager applet
+riverctl map -layout 0 normal Super Q spawn $sessionmanager
 
 # }}}
 # Mouse keybindings {{{
