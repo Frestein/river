@@ -58,3 +58,9 @@ fi
 if [[ ! $(pidof jamesdsp) ]]; then
   jamesdsp -t &
 fi
+
+# Launch xremap
+if [[ $(pidof xremap) ]]; then
+  pkill xremap
+fi
+xremap "$HOME/.xremap.yml" &

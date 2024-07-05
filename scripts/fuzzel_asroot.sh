@@ -11,7 +11,7 @@ run_command() {
     "$dir/scripts/asroot.sh" foot nvim
     ;;
   "Yazi")
-    "$dir/scripts/asroot.sh" foot ~/.cargo/bin/yazi
+    "$dir/scripts/asroot.sh" foot yazi
     ;;
   "Nemo")
     "$dir/scripts/asroot.sh" HOME=/home/frestein nemo
