@@ -1,6 +1,6 @@
 #!/bin/dash
 
-# River RIVERectory
+# River directory
 RIVER="$HOME/.config/river"
 
 # Fix the non-working xdg-desktop-portal-gtk service
