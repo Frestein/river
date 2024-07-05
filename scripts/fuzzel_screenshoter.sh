@@ -4,7 +4,7 @@
 {
   # notify and view screenshot
   notify_view() {
-    notify_cmd_shot='dunstify -u low -h string:x-dunst-stack-tag:obscreenshot -i /usr/share/archcraft/icons/dunst/picture.png'
+    notify_cmd_shot='notify-send -u low -h string:x-dunst-stack-tag:screenshot -i /usr/share/archcraft/icons/dunst/picture.png'
     ${notify_cmd_shot} "Copied to clipboard."
     paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga &>/dev/null &
     nsxiv -b "${dir}/$file"

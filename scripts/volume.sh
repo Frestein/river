@@ -2,7 +2,7 @@
 
 # Icons
 iDIR='/usr/share/archcraft/icons/dunst'
-notify_cmd='dunstify -u low -h string:x-dunst-stack-tag:obvolume'
+notify_cmd='notify-send -u low -h string:x-dunst-stack-tag:volume'
 
 # Get Volume
 get_volume() {
@@ -25,7 +25,7 @@ get_icon() {
 
 # Notify
 notify_user() {
-  ${notify_cmd} -i "$icon" "Volume : $(get_volume)%"
+  ${notify_cmd} -i "$icon" "Volume: $(get_volume)%"
 }
 
 # Increase Volume

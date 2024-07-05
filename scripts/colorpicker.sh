@@ -9,5 +9,5 @@ if [[ "$color" ]]; then
   # generate preview
   magick -size 48x48 xc:"$color" ${image}
   # notify about it
-  dunstify -u low -h string:x-dunst-stack-tag:obcolorpicker -i ${image} "$color, copied to clipboard."
+  notify-send -u low -h string:x-dunst-stack-tag:colorpicker -i ${image} "$color, copied to clipboard."
 fi

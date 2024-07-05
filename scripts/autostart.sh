@@ -1,66 +1,48 @@
-#!/bin/sh
+#!/bin/dash
 
-# River directory
-dir="$HOME/.config/river"
+# River RIVERectory
+RIVER="$HOME/.config/river"
 
 # Fix the non-working xdg-desktop-portal-gtk service
 systemctl --user import-environment
 
 # Launch polkit agent
- if [[ ! $(pidof polkit-gnome-authentication-agent-1) ]]; then
-  /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
- fi
+[ -z "$(pidof polkit-gnome-authentication-agent-1)" ] \
+  && /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
 # Launch mpd with playerctl mpd-mpris plugin
-if [[ ! $(pidof mpd) ]]; then
-  mpd &
-  wait $!
-  mpd-mpris &
-elif [[ ! $(pidof mpd-mpris) ]]; then
-  mpd-mpris &
-fi
+[ -z "$(pidof mpd)" ] && mpd && wait $! && mpd-mpris \
+  || [ -z "$(pidof mpd-mpris)" ] && mpd-mpris &
 
 # Set wallpaper
-if [[ $(pidof wbg) ]]; then
-  pkill wbg
-fi
-wbg "$dir/themes/nord/wallpaper" &
+[ -n "$(pidof wbg)" ] && pkill wbg
+wbg "$RIVER/themes/nord/wallpaper" &
 
-# Lauch statusbar
-if [[ $(pidof yambar) ]]; then
-  pkill yambar
-fi
-yambar -c "$dir/yambar/config.yml" &
+# Launch statusbar
+[ -n "$(pidof yambar)" ] && pkill yambar
+yambar -c "$RIVER/yambar/config.yml" &
 
-# Launch dunst daemon
-if [[ $(pidof dunst) ]]; then
-  pkill dunst
-fi
-dunst -config "$dir/dunstrc" &
+# Check and create mako config directory and file
+MAKO_DIR="$HOME/.config/mako"
+MAKO_CONFIG="$MAKO_DIR/config"
+[ ! -d "$MAKO_DIR" ] && mkdir -p "$MAKO_DIR"
+[ ! -f "$MAKO_CONFIG" ] && ln -sf "$RIVER/mako/config" "$MAKO_CONFIG"
+
+# Launch notification daemon
+[ -z "$(pidof mako)" ] && mako || makoctl reload &
 
 # Launch foot server
-if [[ ! $(pidof foot) ]]; then
-  foot --server &
-fi
+[ -z "$(pidof foot)" ] && foot --server &
 
 # Launch swayidle
-if [[ ! $(pidof swayidle) ]]; then
-  swayidle -w \
-    timeout 300 "$dir/scripts/waylock.sh" &
-fi
+[ -z "$(pidof swayidle)" ] && swayidle -w timeout 300 "$RIVER/scripts/waylock.sh" &
 
-## Mount Google Drive
-if [[ ! $(pidof rclone) ]]; then
-  rclone mount --daemon GoogleDriveMain: "$HOME/Google Drive" &
-fi
+# Launch key remapper
+[ -n "$(pidof xremap)" ] && pkill xremap
+xremap "$HOME/.xremap.yml" &
 
 # Launch jamesdsp
-if [[ ! $(pidof jamesdsp) ]]; then
-  jamesdsp -t &
-fi
+[ -z "$(pidof jamesdsp)" ] && jamesdsp -t &
 
-# Launch xremap
-if [[ $(pidof xremap) ]]; then
-  pkill xremap
-fi
-xremap "$HOME/.xremap.yml" &
+# Mount Google Drive
+[ -z "$(pidof rclone)" ] && rclone mount --daemon GoogleDriveMain: "$HOME/Google Drive" &
