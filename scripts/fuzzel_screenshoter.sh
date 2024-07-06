@@ -7,8 +7,8 @@
     notify_cmd_shot='notify-send -u low -h string:x-dunst-stack-tag:screenshot -i /usr/share/archcraft/icons/dunst/picture.png'
     ${notify_cmd_shot} "Copied to clipboard."
     paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga &>/dev/null &
-    nsxiv -b "${dir}/$file"
-    if [ -e "$dir/$file" ] && [ -s "$dir/$file" ]; then
+    nsxiv -b "${screenshots_dir}/$file"
+    if [ -e "$screenshots_dir/$file" ] && [ -s "$screenshots_dir/$file" ]; then
       ${notify_cmd_shot} "Screenshot saved."
     else
       ${notify_cmd_shot} "Screenshot aborted."
@@ -16,51 +16,20 @@
   }
   # copy screenshot to clipboard
   copy_shot() {
-    tee "$dir/$file" | wl-copy --type image/png
+    tee "$screenshots_dir/$file" | wl-copy --type image/png
   }
   # countdown
   countdown() {
     for sec in $(seq $1 -1 1); do
-      dunstify -t 1000 -h string:x-dunst-stack-tag:screenshottimer -i /usr/share/archcraft/icons/dunst/timer.png "Taking shot in : $sec"
+      notify-send -t 1000 -h string:x-dunst-stack-tag:screenshottimer -i /usr/share/archcraft/icons/dunst/timer.png "Taking shot in : $sec"
       sleep 1
     done
   }
   # a function to get custom value as input. Gets one string as input to be
   # used as message.
   func_get_input() {
-    echo | fuzzel -d -p "${1}" -l 0 -P 0
+    echo | fuzzel -d -p "${1}" -l 0 -P 0 --config="$river_dir/fuzzel/fuzzel.ini"
   }
-}
-
-#-------[ argument parsing ]-------#
-{
-  if [[ "${1}" == "--help" ]] || [[ "${1}" == "-h" ]] || [[ "${1}" == "help" ]]; then
-    cat <<'EOF'
-
-fuzzel_screenshot provides a menu with set of custom commands to
-perform some simple automated image manipulation on screenshots
-taken using Flameshot, and then putting them into clipboard.
-
-Commands:
-    -h, --help    To show this help
-
-Menu:
-    Instant:
-      Trim:          It just trims the extra spaces around the
-                     selected region.
-      Select window: Waits for user to select a window, then take
-                     screenshot of it.
-      Remove white:  Useful to remove the white background. It will
-                     replace white with transparent.
-      Bordered:      Add border around the captured screenshot.
-      Scaled:        Resize the screenshot either by percentage
-                     (e.g 75%) or specific dimension (e.g 200x300).
-    Timer:
-      Countdown:     Take a screenshot after a countdown (in seconds).
-
-EOF
-    exit 0
-  fi
 }
 
 #-------[ load config ]-------#
@@ -80,58 +49,52 @@ EOF
   #-------------[ file ]--------------#
   {
     time=$(date +%Y-%m-%d-%H-%M-%S)
-    geometry=$(xrandr | grep 'current' | head -n1 | cut -d',' -f2 | tr -d '[:blank:],current')
-    dir="$(xdg-user-dir PICTURES)/Screenshots"
+    geometry=$(wlr-randr | grep "current" | awk "{print $1}")
+    screenshots_dir="$(xdg-user-dir PICTURES)/Screenshots"
     file="Screenshot_${time}_${geometry}.png"
   }
   {
     # Directory
-    if [[ ! -d "$dir" ]]; then
-      mkdir -p "$dir"
+    if [[ ! -d "$screenshots_dir" ]]; then
+      mkdir -p "$screenshots_dir"
     fi
   }
 }
 
-screenshot_type=$(echo -e "Instant\nTimer" | fuzzel -d -p 'Screenshot type ' -l 2)
+river_dir="$HOME/.config/river"
 
-case $screenshot_type in "Instant")
+options=$(echo -e " Instant\n󰔛 Timer")
+selected_option=$(echo "$options" | fuzzel -d \
+  -l 2 \
+  -p 'Screenshot type ' \
+  --config="$river_dir/fuzzel/fuzzel.ini")
+command=$(echo "$selected_option" | grep -o -E '[a-zA-Z]+')
 
-  RET=$(echo -e "Trim\nSelect window\nRemove white\nBordered\nScaled" |
-    fuzzel -d -l 5 \
-    -p "Screenshot ")
+case $command in "Instant")
+
+  options=$(echo -e "󰆞 Trim\n󰀫 Alpha\n󰢡 Border\n Scale")
+  selected_option=$(echo "$options" | fuzzel -d \
+    -l 4 \
+    -p 'Screenshot ' \
+    --config="$river_dir/fuzzel/fuzzel.ini")
+  command=$(echo "$selected_option" | grep -o -E '[a-zA-Z]+')
 
   sleep 0.1
 
-  case $RET in
-  Trim)
+  case $command in
+  "Trim")
     flameshot gui -r |
       magick png:- -trim png:- |
       copy_shot
     notify_view
     ;;
-  "Select window")
-    # get the window ID
-    TMP_WINDOW_ID=$(xdotool selectwindow)
-
-    unset WINDOW X Y WIDTH HEIGHT SCREEN
-    # eval $(xdotool selectwindow getwindowgeometry --shell)
-    eval $(xdotool getwindowgeometry --shell "${TMP_WINDOW_ID}")
-
-    # Put the window in focus
-    xdotool windowfocus --sync "${TMP_WINDOW_ID}"
-    sleep 0.05
-
-    # run flameshot in gui mode in the desired coordinates
-    flameshot gui --region "${WIDTH}x${HEIGHT}+${X}+${Y}" -r | copy_shot
-    notify_view
-    ;;
-  "Remove white")
+  "Alpha")
     flameshot gui -r |
       magick png:- -transparent white -fuzz 90% png:- |
       copy_shot
     notify_view
     ;;
-  Bordered)
+  "Border")
     flameshot gui -r |
       magick png:- \
         -format "roundrectangle 4,3 %[fx:w+0],%[fx:h+0] ${config_action_bordered_corner_radius},${config_action_bordered_corner_radius}" \
@@ -146,7 +109,7 @@ case $screenshot_type in "Instant")
       copy_shot
     notify_view
     ;;
-  Scaled)
+  "Scale")
     while :; do
       # get the value from user
       tmp_size=$(func_get_input "Resize (75%, 200x300) ")
@@ -180,7 +143,7 @@ case $screenshot_type in "Instant")
       flameshot gui -r | copy_shot
       notify_view
   else
-      dunstify -u low -h string:x-dunst-stack-tag:obscreenshot -i /usr/share/archcraft/icons/dunst/picture.png "Invalid countdown time."
+      notify-send -u low -h string:x-dunst-stack-tag:screenshot -i /usr/share/archcraft/icons/dunst/picture.png "Invalid countdown time."
   fi
   ;;
 *) ;;

@@ -1,8 +1,10 @@
 #!/bin/sh
 
-ANDROID_HOME=$HOME/Projects/android/sdk
+dir="$HOME/.config/river"
 
-FUZZEL_IGNORED_BINDIRS=$HOME/.config/qtile/scripts:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin
+ANDROID_HOME="$HOME/Projects/android/sdk"
+
+FUZZEL_IGNORED_BINDIRS="$HOME/.config/qtile/scripts:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin"
 
 exit_err() {
   echo "$1" >&2
@@ -36,7 +38,7 @@ for _bindir in "${_bindirs[@]}"; do
 done
 
 if [ -n "$_lsdirs" ]; then
-  _execfile="$(ls ${_lsdirs[@]} | sort | uniq | sed '/^$/d' | $_fuzzel_exec -d -p '󰜎 ')"
+  _execfile="$(ls ${_lsdirs[@]} | sort | uniq | sed '/^$/d' | $_fuzzel_exec -d -p '󰜎 ' --config="$dir/fuzzel/fuzzel.ini")"
 
   [ -n "$_execfile" ] || { echo "No executable was selected!"; exit; }
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/dash
 
 dir=$HOME/.config/river
 
@@ -25,7 +25,11 @@ run_command() {
   esac
 }
 
-menu=$(echo -en "󰍃 Logout\n Lock\n Reload\n Reboot\n Shutdown" | fuzzel --dmenu --prompt "Session Manager " -l 5)
-selected=$(echo "$menu" | grep -o -E '[a-zA-Z]+')
+options=$(echo "󰍃 Logout\n Lock\n Reload\n Reboot\n Shutdown")
+selected_option=$(echo "$options" | fuzzel -d \
+  -l 5 \
+  -p "Session Manager " \
+  --config="$dir/fuzzel/fuzzel.ini")
+command=$(echo "$selected_option" | grep -o -E '[a-zA-Z]+')
 
-run_command "$selected"
+run_command $command

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/dash
 
 # River directory
 dir="$HOME/.config/river"

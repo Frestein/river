@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/dash
 
 dir=$HOME/.config/river
 
@@ -19,7 +19,11 @@ run_command() {
   esac
 }
 
-menu=$(echo -en " Foot\n Neovim\n󰇥 Yazi\n Nemo" | fuzzel -d -p "Root " -l 4)
-selected=$(echo "$menu" | grep -o -E '[a-zA-Z]+')
+options=$(echo " Foot\n Neovim\n󰇥 Yazi\n Nemo")
+selected_option=$(echo "$options" | fuzzel -d \
+  -l 4 \
+  -p "Root " \
+  --config="$dir/fuzzel/fuzzel.ini")
+command=$(echo "$selected_option" | grep -o -E '[a-zA-Z]+')
 
-run_command "$selected"
+run_command $command

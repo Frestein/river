@@ -1,7 +1,7 @@
 #!/bin/dash
 
 # River directory
-RIVER="$HOME/.config/river"
+dir="$HOME/.config/river"
 
 # Fix the non-working xdg-desktop-portal-gtk service
 systemctl --user import-environment
@@ -16,17 +16,17 @@ systemctl --user import-environment
 
 # Set wallpaper
 [ -n "$(pidof wbg)" ] && pkill wbg
-wbg "$RIVER/themes/nord/wallpaper" &
+wbg "$dir/themes/nord/wallpaper" &
 
 # Launch statusbar
 [ -n "$(pidof yambar)" ] && pkill yambar
-yambar -c "$RIVER/yambar/config.yml" &
+yambar -c "$dir/yambar/config.yml" &
 
 # Check and create mako config directory and file
 MAKO_DIR="$HOME/.config/mako"
 MAKO_CONFIG="$MAKO_DIR/config"
 [ ! -d "$MAKO_DIR" ] && mkdir -p "$MAKO_DIR"
-[ ! -f "$MAKO_CONFIG" ] && ln -sf "$RIVER/mako/config" "$MAKO_CONFIG"
+[ ! -f "$MAKO_CONFIG" ] && ln -sf "$dir/mako/config" "$MAKO_CONFIG"
 
 # Launch notification daemon
 [ -z "$(pidof mako)" ] && mako || makoctl reload &
@@ -35,7 +35,7 @@ MAKO_CONFIG="$MAKO_DIR/config"
 [ -z "$(pidof foot)" ] && foot --server &
 
 # Launch swayidle
-[ -z "$(pidof swayidle)" ] && swayidle -w timeout 300 "$RIVER/scripts/waylock.sh" &
+[ -z "$(pidof swayidle)" ] && swayidle -w timeout 300 "$dir/scripts/waylock.sh" &
 
 # Launch key remapper
 [ -n "$(pidof xremap)" ] && pkill xremap

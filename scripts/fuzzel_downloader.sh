@@ -1,7 +1,9 @@
 #!/bin/sh
 
+dir="$HOME/.config/river"
+
 # Ask the user for a URL to download
-url=$(echo | fuzzel -p 'Download ' -d -l 0 -P 0)
+url=$(echo | fuzzel -p 'Download ' -d -l 0 -P 0 --config="$dir/fuzzel/fuzzel.ini")
 
 # Exit the script if the URL is empty
 if [ -z "$url" ]; then
