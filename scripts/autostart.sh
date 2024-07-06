@@ -49,3 +49,6 @@ xremap "$HOME/.xremap.yml" &
 
 # Set gsettings
 "$dir/scripts/gsettings.sh" &
+
+# Launch clipboard manager
+[ -z "$(pidof wl-paste)" ] && wl-paste --watch cliphist store &

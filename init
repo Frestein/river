@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/dash 
 # vim:fileencoding=utf-8:foldmethod=marker
 
 # This is configuration file for river.
@@ -10,10 +10,7 @@
  
 # Variables {{{
 
-# River directory
-dir=$HOME/.config/river
-
-# Imports
+dir="$HOME/.config/river"
 volume="$dir/scripts/volume.sh"
 waylock="$dir/scripts/waylock.sh"
 downloader="$dir/scripts/fuzzel_downloader.sh"
@@ -22,6 +19,7 @@ screenshot="$dir/scripts/screenshot.sh"
 screenshoter="$dir/scripts/fuzzel_screenshoter.sh"
 networkmanager="$dir/scripts/networkmanager.py"
 sessionmanager="$dir/scripts/fuzzel_sessionmanager.sh"
+clipmanager="$dir/scripts/fuzzel_clipmanager.sh"
 runner="$dir/scripts/fuzzel_drun.sh"
 asroot="$dir/scripts/fuzzel_asroot.sh"
 
@@ -34,35 +32,32 @@ riverctl spawn "$dir/scripts/autostart.sh"
 # }}}
 # Keyboard keybindings {{{
 
-# Super + Shift + Return to start an instance of foot
+### Apps --------------------------------------------------
+
+# Super+Shift + Return to start an instance of foot
 riverctl map -layout 0 normal Super Return spawn footclient
 
-# Super + T to start an instance of floating foot
+# Super+T to start an instance of floating foot
 riverctl map -layout 0 normal Super T spawn "footclient --app-id 'footclient-float' --window-size-pixels 1000x600"
 
-# Super+C to close the focused view
-riverctl map -layout 0 normal Super C close
+# Super+A to spawn Android Studio
+riverctl map -layout 0 normal Super A spawn android-studio
 
-# Control + Alt + L to lock screen
-riverctl map -layout 0 normal Control+Alt L spawn $waylock 
-
-# Super + Shift + R to reload river configuration
-riverctl map -layout 0 normal Super+Shift R spawn "$dir/init"
+### Control River -----------------------------------------
 
 # Super+Shift+Q to exit river
 riverctl map -layout 0 normal Super+Shift Q exit
 
-# Focus previous tags
+# Super+Shift+R to reload river configuration
+riverctl map -layout 0 normal Super+Shift R spawn "$dir/init"
+
+# Super+C to close the focused view
+riverctl map -layout 0 normal Super C close
+
+### Tags ---------------------------------------------------
+
+# Alt+Tab to focus previous tags
 riverctl map -layout 0 normal Alt Tab focus-previous-tags
-
-# Super+J and Super+K to focus the next/previous view in the layout stack
-riverctl map -layout 0 normal Super J focus-view next
-riverctl map -layout 0 normal Super K focus-view previous
-
-# Super+Shift+J and Super+Shift+K to swap the focused view with the next/previous
-# view in the layout stack
-riverctl map -layout 0 normal Super+Shift J swap next
-riverctl map -layout 0 normal Super+Shift K swap previous
 
 # Super+Period and Super+Comma to focus the next/previous output
 riverctl map -layout 0 normal Super Period focus-output next
@@ -72,21 +67,24 @@ riverctl map -layout 0 normal Super Comma focus-output previous
 riverctl map -layout 0 normal Super+Shift Period send-to-output next
 riverctl map -layout 0 normal Super+Shift Comma send-to-output previous
 
+### Views ------------------------------------------------------
+
 # Super+Return to bump the focused view to the top of the layout stack
 riverctl map -layout 0 normal Super+Shift Return zoom
 
-# Super+H and Super+L to decrease/increase the main ratio of rivertile(1)
-riverctl map -layout 0 normal Super H send-layout-cmd rivertile "main-ratio -0.05"
-riverctl map -layout 0 normal Super L send-layout-cmd rivertile "main-ratio +0.05"
+# Super+Shift+J and Super+Shift+K to swap the focused view with the next/previous
+# view in the layout stack
+riverctl map -layout 0 normal Super+Shift J swap next
+riverctl map -layout 0 normal Super+Shift K swap previous
 
-# Super+Shift+H and Super+Shift+L to increment/decrement the main count of rivertile(1)
-riverctl map -layout 0 normal Super+Shift H send-layout-cmd rivertile "main-count +1"
-riverctl map -layout 0 normal Super+Shift L send-layout-cmd rivertile "main-count -1"
+# Super+J and Super+K to focus the next/previous view in the layout stack
+riverctl map -layout 0 normal Super J focus-view next
+riverctl map -layout 0 normal Super K focus-view previous
 
 # Super+Alt+{H,J,K,L} to move views
-riverctl map -layout 0 normal Super+Alt H move left 100
-riverctl map -layout 0 normal Super+Alt J move down 100
-riverctl map -layout 0 normal Super+Alt K move up 100
+riverctl map -layout 0 normal Super+Alt H move left  100
+riverctl map -layout 0 normal Super+Alt J move down  100
+riverctl map -layout 0 normal Super+Alt K move up    100
 riverctl map -layout 0 normal Super+Alt L move right 100
 
 # Super+Alt+Control+{H,J,K,L} to snap views to screen edges
@@ -105,22 +103,83 @@ do
     tags=$((1 << ($i - 1)))
 
     # Super+[1-9] to focus tag [0-8]
-    riverctl map -layout 0 normal Super $i set-focused-tags $tags
+    riverctl map -layout 0 normal Super               $i set-focused-tags $tags
 
     # Super+Shift+[1-9] to tag focused view with tag [0-8]
-    riverctl map -layout 0 normal Super+Shift $i set-view-tags $tags
+    riverctl map -layout 0 normal Super+Shift         $i set-view-tags $tags
 
     # Super+Control+[1-9] to toggle focus of tag [0-8]
-    riverctl map -layout 0 normal Super+Control $i toggle-focused-tags $tags
+    riverctl map -layout 0 normal Super+Control       $i toggle-focused-tags $tags
 
     # Super+Shift+Control+[1-9] to toggle tag [0-8] of focused view
     riverctl map -layout 0 normal Super+Shift+Control $i toggle-view-tags $tags
 done
 
+### Windows ---------------------------------------------------
+
+# Super+Space to toggle float
+riverctl map -layout 0 normal Super Z toggle-float
+
+# Super+F to toggle fullscreen
+riverctl map -layout 0 normal Super F toggle-fullscreen
+
+### Layout ----------------------------------------------------
+
+# Super+H and Super+L to decrease/increase the main ratio of rivertile(1)
+riverctl map -layout 0 normal Super H send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map -layout 0 normal Super L send-layout-cmd rivertile "main-ratio +0.05"
+
+# Super+Shift+H and Super+Shift+L to increment/decrement the main count of rivertile(1)
+riverctl map -layout 0 normal Super+Shift H send-layout-cmd rivertile "main-count +1"
+riverctl map -layout 0 normal Super+Shift L send-layout-cmd rivertile "main-count -1"
+
+# Super+{Up,Right,Down,Left} to change layout orientation
+riverctl map -layout 0 normal Super Up    send-layout-cmd rivertile "main-location top"
+riverctl map -layout 0 normal Super Right send-layout-cmd rivertile "main-location right"
+riverctl map -layout 0 normal Super Down  send-layout-cmd rivertile "main-location bottom"
+riverctl map -layout 0 normal Super Left  send-layout-cmd rivertile "main-location left"
+
+### Modes ----------------------------------------------------
+
+# Declare a passthrough mode. This mode has only a single mapping -layout 0 to return to
+# normal mode. This makes it useful for testing a nested wayland compositor
+riverctl declare-mode passthrough
+
+# Super+F11 to enter passthrough mode
+riverctl map -layout 0 normal       Super F11 enter-mode passthrough
+
+# Super+F11 to return to normal mode
+riverctl map -layout 0 passthrough  Super F11 enter-mode normal
+
+# Various media key mapping -layout 0 examples for both normal and locked mode which do
+# not have a modifier
+for mode in normal locked
+do
+  
+  riverctl map -layout 0 $mode None XF86HomePage          spawn firefox
+  riverctl map -layout 0 $mode None XF86Explorer          spawn nemo
+  riverctl map -layout 0 $mode None XF86Mail              spawn thunderbird
+  riverctl map -layout 0 $mode None XF86Tools             spawn "footclient --app-id 'footclient-float' --window-size-pixels 800x400 ncmpcpp -s visualizer -S playlist"
+  riverctl map -layout 0 $mode None XF86Calculator        spawn galculator
+
+  # Control pipewire volume with wpctl
+  riverctl map -layout 0 $mode None XF86AudioRaiseVolume  spawn "$volume --inc"
+  riverctl map -layout 0 $mode None XF86AudioLowerVolume  spawn "$volume --dec"
+  riverctl map -layout 0 $mode None XF86AudioMute         spawn "$volume --toggle"
+
+  # Control MPRIS aware media players with playerctl
+  riverctl map -layout 0 $mode None XF86AudioNext         spawn "playerctl next"
+  riverctl map -layout 0 $mode None XF86AudioPrev         spawn "playerctl previous"
+  riverctl map -layout 0 $mode None XF86AudioPlay         spawn "playerctl play-pause"
+  riverctl map -layout 0 $mode None XF86AudioStop         spawn "playerctl stop"
+done
+
+### Scratchpad ---------------------------------------------------
+
 # Super+0 to focus all tags
 # Super+Shift+0 to tag focused view with all tags
 all_tags=$(((1 << 32) - 1))
-riverctl map -layout 0 normal Super 0 set-focused-tags $all_tags
+riverctl map -layout 0 normal Super       0 set-focused-tags $all_tags
 riverctl map -layout 0 normal Super+Shift 0 set-view-tags $all_tags
 
 # The scratchpad will live on an unused tag. Which tags are used depends on your
@@ -128,7 +187,7 @@ riverctl map -layout 0 normal Super+Shift 0 set-view-tags $all_tags
 scratch_tag=$((1 << 9 ))
 
 # Toggle the scratchpad with Super+P
-riverctl map -layout 0 normal Super P toggle-focused-tags ${scratch_tag}
+riverctl map -layout 0 normal Super       P toggle-focused-tags ${scratch_tag}
 
 # Send windows to the scratchpad with Super+Shift+P
 riverctl map -layout 0 normal Super+Shift P set-view-tags ${scratch_tag}
@@ -138,88 +197,54 @@ riverctl map -layout 0 normal Super+Shift P set-view-tags ${scratch_tag}
 all_but_scratch_tag=$(( ((1 << 32) - 1) ^ $scratch_tag ))
 riverctl spawn-tagmask ${all_but_scratch_tag}
 
-# Super+Space to toggle float
-riverctl map -layout 0 normal Super Z toggle-float
+### Screenlocker ------------------------------------------
 
-# Super+F to toggle fullscreen
-riverctl map -layout 0 normal Super F toggle-fullscreen
-
-# Super+{Up,Right,Down,Left} to change layout orientation
-riverctl map -layout 0 normal Super Up    send-layout-cmd rivertile "main-location top"
-riverctl map -layout 0 normal Super Right send-layout-cmd rivertile "main-location right"
-riverctl map -layout 0 normal Super Down  send-layout-cmd rivertile "main-location bottom"
-riverctl map -layout 0 normal Super Left  send-layout-cmd rivertile "main-location left"
-
-# Declare a passthrough mode. This mode has only a single mapping -layout 0 to return to
-# normal mode. This makes it useful for testing a nested wayland compositor
-riverctl declare-mode passthrough
-
-# Super+F11 to enter passthrough mode
-riverctl map -layout 0 normal Super F11 enter-mode passthrough
-
-# Super+F11 to return to normal mode
-riverctl map -layout 0 passthrough Super F11 enter-mode normal
-
-# Various media key mapping -layout 0 examples for both normal and locked mode which do
-# not have a modifier
-for mode in normal locked
-do
-    riverctl map -layout 0 $mode None XF86HomePage    spawn firefox
-    riverctl map -layout 0 $mode None XF86Explorer    spawn nemo
-    riverctl map -layout 0 $mode None XF86Mail        spawn thunderbird
-    riverctl map -layout 0 $mode None XF86Tools       spawn "footclient --app-id 'footclient-float' --window-size-pixels 800x400 ncmpcpp -s visualizer -S playlist"
-    riverctl map -layout 0 $mode None XF86Calculator  spawn galculator
-
-    # Control pulse audio volume with pamixer (https://github.com/cdemoulins/pamixer)
-    riverctl map -layout 0 $mode None XF86AudioRaiseVolume  spawn "$volume --inc"
-    riverctl map -layout 0 $mode None XF86AudioLowerVolume  spawn "$volume --dec"
-    riverctl map -layout 0 $mode None XF86AudioMute         spawn "$volume --toggle"
-
-    # Control MPRIS aware media players with playerctl (https://github.com/altdesktop/playerctl)
-    riverctl map -layout 0 $mode None XF86AudioNext  spawn 'playerctl next'
-    riverctl map -layout 0 $mode None XF86AudioPrev  spawn 'playerctl previous'
-    riverctl map -layout 0 $mode None XF86AudioPlay  spawn 'playerctl play-pause'
-    riverctl map -layout 0 $mode None XF86AudioStop  spawn 'playerctl stop'
-done
+# Control+Alt+L to lock screen
+riverctl map -layout 0 normal Control+Alt L spawn $waylock 
 
 ### Colorpicker -------------------------------------------
-# Alt + P to pick color
-riverctl map -layout 0 normal Alt P spawn "$colorpicker"
+
+# Alt+P to pick color
+riverctl map -layout 0 normal Alt P spawn $colorpicker
 
 ### Screenshot --------------------------------------------
 # Print to take screenshot
-riverctl map -layout 0 normal None Print    spawn "$screenshot --now"
+riverctl map -layout 0 normal None    Print   spawn "$screenshot --now"
 
-# Control + Print to take screenshot in 5 seconds
-riverctl map -layout 0 normal Control Print spawn "$screenshot --in5"
+# Control+Print to take screenshot in 5 seconds
+riverctl map -layout 0 normal Control Print   spawn "$screenshot --in5"
 
-# Shift + Print to take screenshot in 10 seconds
-riverctl map -layout 0 normal Shift Print   spawn "$screenshot --in10"
+# Shift+Print to take screenshot in 10 seconds
+riverctl map -layout 0 normal Shift   Print   spawn "$screenshot --in10"
 
-# Super + Print to take screenshot of selected area
-riverctl map -layout 0 normal Super Print   spawn "$screenshot --area"
+# Super+Print to take screenshot of selected area
+riverctl map -layout 0 normal Super   Print   spawn "$screenshot --area"
 
 ### Applets -----------------------------------------------
-# Alt + F1 to open the app launcher applet
-riverctl map -layout 0 normal Alt F1  spawn "fuzzel -p 'Apps '"
+
+# Control + F1 to open the app launcher applet
+riverctl map -layout 0 normal Control F1  spawn "fuzzel -p 'Apps ' --config='$dir/fuzzel/fuzzel.ini'"
 
 # Super + R to open the app runner applet
-riverctl map -layout 0 normal Super R spawn $runner
+riverctl map -layout 0 normal Super   R   spawn $runner
 
 # Alt + R to open the app runner applet
-riverctl map -layout 0 normal Alt R spawn $asroot
+riverctl map -layout 0 normal Alt     R   spawn $asroot
 
 # Super + N to open the network manager applet
-riverctl map -layout 0 normal Super N spawn $networkmanager
+riverctl map -layout 0 normal Super   N   spawn $networkmanager
 
 # Super + D to open the downloader applet
-riverctl map -layout 0 normal Super D spawn $downloader
+riverctl map -layout 0 normal Super   D   spawn $downloader
 
 # Super + S to open the screenshoter applet
-riverctl map -layout 0 normal Super S spawn $screenshoter
+riverctl map -layout 0 normal Super   S   spawn $screenshoter
 
-# Super + Q to open the network manager applet
-riverctl map -layout 0 normal Super Q spawn $sessionmanager
+# Super + Q to open the session manager applet
+riverctl map -layout 0 normal Super   Q   spawn $sessionmanager
+
+# Super + V to open the clipboard manager applet
+riverctl map -layout 0 normal Super   V   spawn $clipmanager
 
 # }}}
 # Mouse keybindings {{{
@@ -259,12 +284,12 @@ rivertile -view-padding 6 -outer-padding 6 &
 # }}}
 # Float rules {{{
 
-declare -a float_apps=(
-    "*float*"
-    "galculator"
-)
+float_apps="
+    *float*
+    galculator
+"
 
-for float_app in "${float_apps[@]}"; do
+for float_app in $float_apps; do
     riverctl rule-add -app-id "$float_app" float
 done
 
@@ -289,12 +314,12 @@ riverctl rule-add -app-id "nemo" tags $((1 << 3))
 riverctl rule-add -app-id "zathura" tags $((1 << 4))
 
 # Tag 6 - Gaming applications
-declare -a tag6_apps=(
-    "steam"
-    "lutris"
-)
+tag6_apps="
+    steam
+    lutris
+"
 
-for tag6_app in "${tag6_apps[@]}"; do
+for tag6_app in $tag6_apps; do
     riverctl rule-add -app-id "$tag6_app" tags $((1 << 5))
 done
 
@@ -310,22 +335,28 @@ riverctl border-color-urgent 0xA3BE8C
 # }}}
 # Server Side Decorations (SSD) {{{
 
-declare -a ssd_apps=(
-    "firefox"
-    "piper"
-    "steam"
-    "nemo"
-    "mpv"
-    "avahi*"
-    "*Meld*"
-    "lutris"
-    "Waydroid"
-    "galculator"
-    "*telegram*"
-    "*pavucontrol*"
-)
+ssd_apps="
+    bvnc
+    bssh
+    xarchiver
+    firefox
+    piper
+    steam
+    nemo
+    mpv
+    avahi*
+    *Meld*
+    lutris
+    Waydroid
+    galculator
+    *telegram*
+    *pavucontrol*
+    org.pwmt.zathura
+    nm-connection-editor 
+    polkit-gnome-authentication-agent-1
+"
 
-for ssd_app in "${ssd_apps[@]}"; do
+for ssd_app in $ssd_apps; do
     riverctl rule-add -app-id "$ssd_app" ssd
 done
 
