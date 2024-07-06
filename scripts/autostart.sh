@@ -46,3 +46,6 @@ xremap "$HOME/.xremap.yml" &
 
 # Mount Google Drive
 [ -z "$(pidof rclone)" ] && rclone mount --daemon GoogleDriveMain: "$HOME/Google Drive" &
+
+# Set gsettings
+"$dir/scripts/gsettings.sh" &
