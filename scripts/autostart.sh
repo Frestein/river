@@ -32,7 +32,7 @@ MAKO_CONFIG="$MAKO_DIR/config"
 [ -z "$(pidof mako)" ] && mako || makoctl reload &
 
 # Launch foot server
-[ -z "$(pidof foot)" ] && foot --server &
+[ -z "$(pidof foot)" ] && foot --server --config "$dir/foot/foot.ini" &
 
 # Launch swayidle
 [ -z "$(pidof swayidle)" ] && swayidle -w \
