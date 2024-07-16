@@ -35,7 +35,11 @@ MAKO_CONFIG="$MAKO_DIR/config"
 [ -z "$(pidof foot)" ] && foot --server &
 
 # Launch swayidle
-[ -z "$(pidof swayidle)" ] && swayidle -w timeout 300 "$dir/scripts/waylock.sh" &
+[ -z "$(pidof swayidle)" ] && swayidle -w \
+  timeout 600 "$dir/scripts/screenlock.sh" \ &
+# TODO: Implement monitor power management feature
+  # timeout 10 "wlopm --off \*;$dir/scripts/waylock.sh" resume "wlopm --on \*" \
+  # before-sleep "$dir/scripts/waylock.sh"
 
 # Launch key remapper
 [ -n "$(pidof xremap)" ] && pkill xremap

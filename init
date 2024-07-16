@@ -12,7 +12,7 @@
 
 dir="$HOME/.config/river"
 volume="$dir/scripts/volume.sh"
-waylock="$dir/scripts/waylock.sh"
+screenlock="$dir/scripts/screenlock.sh"
 downloader="$dir/scripts/fuzzel_downloader.sh"
 colorpicker="$dir/scripts/colorpicker.sh"
 screenshot="$dir/scripts/screenshot.sh"
@@ -200,7 +200,7 @@ riverctl spawn-tagmask ${all_but_scratch_tag}
 ### Screenlocker ------------------------------------------
 
 # Control+Alt+L to lock screen
-riverctl map -layout 0 normal Control+Alt L spawn $waylock 
+riverctl map -layout 0 normal Control+Alt L spawn $screenlock 
 
 ### Colorpicker -------------------------------------------
 
