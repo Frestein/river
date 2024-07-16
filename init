@@ -323,6 +323,8 @@ for tag6_app in $tag6_apps; do
     riverctl rule-add -app-id "$tag6_app" tags $((1 << 5))
 done
 
+riverctl rule-add -title "Steam" tags $((1 << 5))
+
 # }}}
 # River colors {{{
 
@@ -343,10 +345,14 @@ ssd_apps="
     piper
     steam
     nemo
+    vimiv
+    imv
     mpv
+    qemu
     avahi*
     *Meld*
     lutris
+    webcord
     Waydroid
     galculator
     *telegram*
@@ -354,6 +360,7 @@ ssd_apps="
     org.pwmt.zathura
     nm-connection-editor 
     polkit-gnome-authentication-agent-1
+    xdg-desktop-portal-gtk
 "
 
 for ssd_app in $ssd_apps; do
