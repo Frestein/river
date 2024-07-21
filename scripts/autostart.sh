@@ -36,7 +36,7 @@ MAKO_CONFIG="$MAKO_DIR/config"
 
 # Launch swayidle
 [ -z "$(pidof swayidle)" ] && swayidle -w \
-  timeout 600 "$dir/scripts/screenlock.sh" \ &
+  timeout 600 "$dir/scripts/screenlock.sh" &
 # TODO: Implement monitor power management feature
   # timeout 10 "wlopm --off \*;$dir/scripts/waylock.sh" resume "wlopm --on \*" \
   # before-sleep "$dir/scripts/waylock.sh"
