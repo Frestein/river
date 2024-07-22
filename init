@@ -31,7 +31,7 @@ riverctl spawn "$dir/scripts/autostart.sh"
 # }}}
 # Keyboard keybindings {{{
 
-### Apps --------------------------------------------------
+### Apps ---------------------------------------------------
 
 # Super+Shift + Return to start an instance of foot
 riverctl map -layout 0 normal Super Return spawn footclient
@@ -42,7 +42,7 @@ riverctl map -layout 0 normal Super T spawn "footclient --app-id 'footclient-flo
 # Super+A to spawn Android Studio
 riverctl map -layout 0 normal Super A spawn android-studio
 
-### Control River -----------------------------------------
+### Control River ------------------------------------------
 
 # Super+Shift+Q to exit river
 riverctl map -layout 0 normal Super+Shift Q exit
@@ -66,7 +66,7 @@ riverctl map -layout 0 normal Super Comma focus-output previous
 riverctl map -layout 0 normal Super+Shift Period send-to-output next
 riverctl map -layout 0 normal Super+Shift Comma send-to-output previous
 
-### Views ------------------------------------------------------
+### Views --------------------------------------------------
 
 # Super+Return to bump the focused view to the top of the layout stack
 riverctl map -layout 0 normal Super+Shift Return zoom
@@ -114,7 +114,7 @@ do
     riverctl map -layout 0 normal Super+Shift+Control $i toggle-view-tags $tags
 done
 
-### Windows ---------------------------------------------------
+### Windows ------------------------------------------------
 
 # Super+Space to toggle float
 riverctl map -layout 0 normal Super Z toggle-float
@@ -122,7 +122,7 @@ riverctl map -layout 0 normal Super Z toggle-float
 # Super+F to toggle fullscreen
 riverctl map -layout 0 normal Super F toggle-fullscreen
 
-### Layout ----------------------------------------------------
+### Layout -------------------------------------------------
 
 # Super+H and Super+L to decrease/increase the main ratio of rivertile(1)
 riverctl map -layout 0 normal Super H send-layout-cmd rivertile "main-ratio -0.05"
@@ -138,7 +138,7 @@ riverctl map -layout 0 normal Super Right send-layout-cmd rivertile "main-locati
 riverctl map -layout 0 normal Super Down  send-layout-cmd rivertile "main-location bottom"
 riverctl map -layout 0 normal Super Left  send-layout-cmd rivertile "main-location left"
 
-### Modes ----------------------------------------------------
+### Modes --------------------------------------------------
 
 # Declare a passthrough mode. This mode has only a single mapping -layout 0 to return to
 # normal mode. This makes it useful for testing a nested wayland compositor
@@ -173,7 +173,7 @@ do
   riverctl map -layout 0 $mode None XF86AudioStop         spawn "playerctl stop"
 done
 
-### Scratchpad ---------------------------------------------------
+### Scratchpad ---------------------------------------------
 
 # Super+0 to focus all tags
 # Super+Shift+0 to tag focused view with all tags
@@ -196,17 +196,17 @@ riverctl map -layout 0 normal Super+Shift P set-view-tags ${scratch_tag}
 all_but_scratch_tag=$(( ((1 << 32) - 1) ^ $scratch_tag ))
 riverctl spawn-tagmask ${all_but_scratch_tag}
 
-### Screenlocker ------------------------------------------
+### Screenlocker -------------------------------------------
 
 # Control+Alt+L to lock screen
 riverctl map -layout 0 normal Control+Alt L spawn "swaylock -C $dir/swaylock/swaylock.conf"
 
-### Colorpicker -------------------------------------------
+### Colorpicker --------------------------------------------
 
 # Alt+P to pick color
 riverctl map -layout 0 normal Alt P spawn $colorpicker
 
-### Screenshot --------------------------------------------
+### Screenshot ---------------------------------------------
 # Print to take screenshot
 riverctl map -layout 0 normal None    Print   spawn "$screenshot --now"
 
@@ -219,7 +219,7 @@ riverctl map -layout 0 normal Shift   Print   spawn "$screenshot --in10"
 # Super+Print to take screenshot of selected area
 riverctl map -layout 0 normal Super   Print   spawn "$screenshot --area"
 
-### Applets -----------------------------------------------
+### Applets ------------------------------------------------
 
 # Control + F1 to open the app launcher applet
 riverctl map -layout 0 normal Control F1  spawn "fuzzel -p 'Apps ' --config='$dir/fuzzel/fuzzel.ini'"
