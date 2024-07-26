@@ -102,7 +102,7 @@ def dmenu_cmd(num_lines, prompt="Networks ", active_lines=None):
         "rofi": ["-dmenu", "-p", str(prompt)],
         "bemenu": ["-p", str(prompt)],
         "wofi": ["-p", str(prompt)],
-        "fuzzel": ["-d", "-p", str(prompt), "--log-level", "none"],
+        "fuzzel": ["-p", str(prompt), "--log-level", "none"],
     }
     command = shlex.split(CONF.get("dmenu", "dmenu_command", fallback="dmenu"))
     cmd_base = basename(command[0])
@@ -816,7 +816,7 @@ def toggle_bluetooth(enable):
 
 def launch_connection_editor():
     """Launch nmtui or the gui nm-connection-editor"""
-    terminal = CONF.get("editor", "terminal", fallback="xterm")
+    terminal = shlex.split(CONF.get("editor", "terminal", fallback="xterm"))
     gui_if_available = CONF.getboolean("editor", "gui_if_available", fallback=True)
     gui = CONF.get("editor", "gui", fallback="nm-connection-editor")
     if gui_if_available is True:
@@ -824,7 +824,7 @@ def launch_connection_editor():
             subprocess.run(gui, check=False)
             return
     if is_installed("nmtui"):
-        subprocess.run([terminal, "-e", "nmtui"], check=False)
+        subprocess.run(terminal + ["-e", "nmtui"], check=False)
         return
     notify("No network connection editor installed", urgency="critical")
 
