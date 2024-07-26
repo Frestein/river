@@ -7,7 +7,7 @@
     notify_cmd_shot='notify-send -u low -h string:x-dunst-stack-tag:screenshot -i /usr/share/archcraft/icons/dunst/picture.png'
     ${notify_cmd_shot} "Copied to clipboard."
     paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga &>/dev/null &
-    nsxiv -b "${screenshots_dir}/$file"
+    qview "${screenshots_dir}/$file"
     if [ -e "$screenshots_dir/$file" ] && [ -s "$screenshots_dir/$file" ]; then
       ${notify_cmd_shot} "Screenshot saved."
     else
