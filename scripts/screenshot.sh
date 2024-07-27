@@ -16,9 +16,9 @@ notify_view() {
   notify_cmd_shot='notify-send -u low -h string:x-dunst-stack-tag:flameshot -i /usr/share/archcraft/icons/dunst/picture.png'
   ${notify_cmd_shot} "Copied to clipboard."
   paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga &>/dev/null &
-  qview "${screenshots_dir}/$file"
   if [ -e "$screenshots_dir/$file" ] && [ -s "$screenshots_dir/$file" ]; then
     ${notify_cmd_shot} "Screenshot saved."
+    qview "${screenshots_dir}/$file"
   else
     ${notify_cmd_shot} "Screenshot aborted."
   fi
