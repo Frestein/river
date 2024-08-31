@@ -264,7 +264,7 @@ riverctl map-pointer normal Super BTN_MIDDLE toggle-float
 riverctl keyboard-layout -model pc105 -variant qwerty -options "grp:win_space_toggle" "us,ru"
 
 # Set keyboard repeat rate
-riverctl set-repeat 25 300
+riverctl set-repeat 25 250
 
 # Fix mouse sensitivity
 riverctl input pointer-1133-49298-Logitech_G102_LIGHTSYNC_Gaming_Mouse pointer-accel -1.0
@@ -278,7 +278,7 @@ riverctl focus-follows-cursor normal
 # Set the default layout generator to be rivertile and start it.
 # River will send the process group of the init executable SIGTERM on exit.
 riverctl default-layout rivertile
-rivertile -view-padding 6 -outer-padding 6 &
+rivertile -view-padding 6 -outer-padding 6 -main-ratio 0.5 &
 
 # }}}
 # Float rules {{{

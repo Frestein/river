@@ -1,6 +1,5 @@
 #!/bin/dash
 
-# River directory
 dir="$HOME/.config/river"
 
 "$dir/scripts/mpris_inhibitor.sh" || exit 1

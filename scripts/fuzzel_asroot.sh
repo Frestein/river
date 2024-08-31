@@ -1,29 +1,27 @@
 #!/bin/dash
 
-dir=$HOME/.config/river
+dir="$HOME/.config/river"
 
 run_command() {
   case "$1" in
   "Foot")
-    "$dir/scripts/asroot.sh" foot -c "$dir/foot/foot.ini"
+    "$dir/scripts/asroot.sh" foot -ec "$dir/foot/foot.ini"
     ;;
   "Neovim")
-    "$dir/scripts/asroot.sh" foot -c "$dir/foot/foot.ini" nvim
+    "$dir/scripts/asroot.sh" foot -ec "$dir/foot/foot.ini" nvim
     ;;
   "Yazi")
-    "$dir/scripts/asroot.sh" foot -c "$dir/foot/foot.ini" yazi
+    "$dir/scripts/asroot.sh" foot -ec "$dir/foot/foot.ini" yazi
     ;;
   "Nemo")
-    "$dir/scripts/asroot.sh" HOME=/home/frestein nemo
+    "$dir/scripts/asroot.sh" HOME="$HOME" nemo
     ;;
   esac
 }
 
-options=$(echo " Foot\n Neovim\n󰇥 Yazi\n Nemo")
+options=" Foot\n Neovim\n󰇥 Yazi\n Nemo"
 selected_option=$(echo "$options" | fuzzel -d \
   -l 4 \
   -p "Root " \
   --config="$dir/fuzzel/fuzzel.ini")
-command=$(echo "$selected_option" | grep -o -E '[a-zA-Z]+')
-
-run_command $command
+command=$(echo "$selected_option" | grep -o -E "[a-zA-Z]+")

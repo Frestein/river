@@ -1,17 +1,17 @@
-#!/bin/sh
+#!/bin/dash
 
 #-------[ internal functions ]-------#
 {
   # notify and view screenshot
   notify_view() {
     notify_cmd_shot='notify-send -u low -h string:x-dunst-stack-tag:screenshot -i /usr/share/archcraft/icons/dunst/picture.png'
-    ${notify_cmd_shot} "Copied to clipboard."
-    paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga &>/dev/null &
+    eval "$notify_cmd_shot 'Copied to clipboard.'"
+    paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga >/dev/null 2>&1 &
     if [ -e "$screenshots_dir/$file" ] && [ -s "$screenshots_dir/$file" ]; then
-      ${notify_cmd_shot} "Screenshot saved."
+      eval "$notify_cmd_shot 'Screenshot saved.'"
       qview "${screenshots_dir}/$file"
     else
-      ${notify_cmd_shot} "Screenshot aborted."
+      eval "$notify_cmd_shot 'Screenshot aborted.'"
     fi
   }
   # copy screenshot to clipboard
@@ -20,7 +20,7 @@
   }
   # countdown
   countdown() {
-    for sec in $(seq $1 -1 1); do
+    seq "$1" -1 1 | while read -r sec; do
       notify-send -t 1000 -h string:x-dunst-stack-tag:screenshottimer -i /usr/share/archcraft/icons/dunst/timer.png "Taking shot in : $sec"
       sleep 1
     done
@@ -55,7 +55,7 @@
   }
   {
     # Directory
-    if [[ ! -d "$screenshots_dir" ]]; then
+    if [ ! -d "$screenshots_dir" ]; then
       mkdir -p "$screenshots_dir"
     fi
   }
@@ -63,7 +63,7 @@
 
 river_dir="$HOME/.config/river"
 
-options=$(echo -e " Instant\n󰔛 Timer")
+options=" Instant\n󰔛 Timer"
 selected_option=$(echo "$options" | fuzzel -d \
   -l 2 \
   -p 'Screenshot type ' \
@@ -72,14 +72,14 @@ command=$(echo "$selected_option" | grep -o -E '[a-zA-Z]+')
 
 case $command in "Instant")
 
-  options=$(echo -e "󰆞 Trim\n󰀫 Alpha\n󰢡 Border\n Scale")
+  options="󰆞 Trim\n󰀫 Alpha\n󰢡 Border\n Scale"
   selected_option=$(echo "$options" | fuzzel -d \
     -l 4 \
     -p 'Screenshot ' \
     --config="$river_dir/fuzzel/fuzzel.ini")
   command=$(echo "$selected_option" | grep -o -E '[a-zA-Z]+')
 
-  sleep 0.1
+  sleep 0.5
 
   case $command in
   "Trim")
@@ -99,12 +99,12 @@ case $command in "Instant")
       magick png:- \
         -format "roundrectangle 4,3 %[fx:w+0],%[fx:h+0] ${config_action_bordered_corner_radius},${config_action_bordered_corner_radius}" \
         -write info:/tmp/tmp.mvg \
-        -alpha set -bordercolor "${config_action_bordered_line_color}" -border ${config_action_bordered_line_thickness} \
+        -alpha set -bordercolor "$config_action_bordered_line_color" -border "$config_action_bordered_line_thickness" \
         \( +clone -alpha transparent -background none \
         -fill white -stroke none -strokewidth 0 -draw @/tmp/tmp.mvg \) \
         -compose DstIn -composite \
         \( +clone -alpha transparent -background none \
-        -fill none -stroke "${config_action_bordered_line_color}" -strokewidth ${config_action_bordered_line_thickness} -draw @/tmp/tmp.mvg \) \
+        -fill none -stroke "$config_action_bordered_line_color" -strokewidth "$config_action_bordered_line_thickness" -draw @/tmp/tmp.mvg \) \
         -compose Over -composite png:- |
       copy_shot
     notify_view
@@ -114,20 +114,24 @@ case $command in "Instant")
       # get the value from user
       tmp_size=$(func_get_input "Resize (75%, 200x300) ")
       # remove spaces (can happen by accident
-      tmp_size=$(echo "${tmp_size}" | sed 's/ //g')
+      tmp_size=$(echo "$tmp_size" | sed 's/ //g')
       # make sure the variable is not empty
-      if [ "$(echo "${tmp_size}" | wc -c)" == "0" ]; then
-        continue
-      fi
-
-      if [ "$(echo "${tmp_size}" | grep -o -E '[0-9]+(%|x[0-9]+)')" == "${tmp_size}" ]; then
+      case "$tmp_size" in
+      *[0-9]*% | *[0-9]*x[0-9]*)
         break
-      fi
+        ;;
+      *)
+        notify-send -u low -h string:x-dunst-stack-tag:screenshot -i /usr/share/archcraft/icons/dunst/picture.png "Invalid resolution."
+        continue
+        ;;
+      esac
     done
 
-    if [[ -n "${tmp_size}" ]]; then
+    sleep 0.5
+
+    if [ "$tmp_size" != "" ]; then
       flameshot gui -r |
-        magick png:- -resize "${tmp_size}" png:- |
+        magick png:- -resize "$tmp_size" png:- |
         copy_shot
       notify_view
     fi
@@ -138,12 +142,13 @@ case $command in "Instant")
 "Timer")
   countdown_time=$(func_get_input "Countdown ")
   # Check if countdown_time is a number and greater than 0
-  if [[ "$countdown_time" =~ ^[0-9]+$ ]] && [ "$countdown_time" -gt 0 ]; then
-      countdown $countdown_time
-      flameshot gui -r | copy_shot
-      notify_view
+  if echo "$countdown_time" | grep -qE '^[0-9]+$' && [ "$countdown_time" -gt 0 ]; then
+    countdown "$countdown_time"
+    sleep 0.5
+    flameshot gui -r | copy_shot
+    notify_view
   else
-      notify-send -u low -h string:x-dunst-stack-tag:screenshot -i /usr/share/archcraft/icons/dunst/picture.png "Invalid countdown time."
+    notify-send -u low -h string:x-dunst-stack-tag:screenshot -i /usr/share/archcraft/icons/dunst/picture.png "Invalid countdown time."
   fi
   ;;
 *) ;;

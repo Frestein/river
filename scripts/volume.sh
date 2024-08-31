@@ -1,44 +1,44 @@
-#!/bin/sh
+#!/bin/dash
 
 icon_dir='/usr/share/archcraft/icons/dunst'
 notify_cmd='notify-send -u low -h string:x-dunst-stack-tag:volume'
 
 get_volume() {
-  echo "$(wpctl get-volume @DEFAULT_SINK@ | awk '{print int($2*100)}')"
+  wpctl get-volume @DEFAULT_SINK@ | awk '{print int($2*100)}'
 }
 
 get_icon() {
   current="$(get_volume)"
-  if [[ "$current" -eq "0" ]]; then
+  if [ "$current" -eq "0" ]; then
     icon="$icon_dir/volume-mute.png"
-  elif [[ ("$current" -ge "0") && ("$current" -le "30") ]]; then
+  elif [ "$current" -ge "0" ] && [ "$current" -le "30" ]; then
     icon="$icon_dir/volume-low.png"
-  elif [[ ("$current" -ge "30") && ("$current" -le "60") ]]; then
+  elif [ "$current" -ge "30" ] && [ "$current" -le "60" ]; then
     icon="$icon_dir/volume-mid.png"
-  elif [[ ("$current" -ge "60") && ("$current" -le "100") ]]; then
+  elif [ "$current" -ge "60" ] && [ "$current" -le "100" ]; then
     icon="$icon_dir/volume-high.png"
   fi
 }
 
 notify_user() {
-  ${notify_cmd} -i "$icon" "Volume: $(get_volume)%"
+  eval "$notify_cmd -i '$icon' 'Volume: $(get_volume)%'"
 }
 
 inc_volume() {
-  [[ $(wpctl status | grep -c "MUTED") == 1 ]] && wpctl set-mute @DEFAULT_SINK@ 0
+  [ "$(wpctl status | grep -c "MUTED")" = 1 ] && wpctl set-mute @DEFAULT_SINK@ 0
   wpctl set-volume @DEFAULT_SINK@ 5%+ -l 1.0 && get_icon && notify_user
 }
 
 dec_volume() {
-  [[ $(wpctl status | grep -c "MUTED") == 1 ]] && wpctl set-mute @DEFAULT_SINK@ 0
+  [ "$(wpctl status | grep -c "MUTED")" = 1 ] && wpctl set-mute @DEFAULT_SINK@ 0
   wpctl set-volume @DEFAULT_SINK@ 5%- -l 1.0 && get_icon && notify_user
 }
 
 toggle_mute() {
-  if [[ $(wpctl status | grep -c "MUTED") == 0 ]]; then
-    wpctl set-mute @DEFAULT_SINK@ toggle && ${notify_cmd} -i "$icon_dir/volume-mute.png" "Mute"
+  if [ "$(wpctl status | grep -c "MUTED")" = 0 ]; then
+    wpctl set-mute @DEFAULT_SINK@ toggle && eval "$notify_cmd -i '$icon_dir/volume-mute.png' 'Mute'"
   else
-    wpctl set-mute @DEFAULT_SINK@ toggle && get_icon && ${notify_cmd} -i "$icon" "Unmute"
+    wpctl set-mute @DEFAULT_SINK@ toggle && get_icon && eval "$notify_cmd -i '$icon' 'Unmute'"
   fi
 }
 
@@ -52,16 +52,16 @@ toggle_mute() {
 # }
 
 # Execute accordingly
-if [[ "$1" == "--get" ]]; then
+if [ "$1" = "--get" ]; then
   get_volume
-elif [[ "$1" == "--inc" ]]; then
+elif [ "$1" = "--inc" ]; then
   inc_volume
-elif [[ "$1" == "--dec" ]]; then
+elif [ "$1" = "--dec" ]; then
   dec_volume
-elif [[ "$1" == "--toggle" ]]; then
+elif [ "$1" = "--toggle" ]; then
   toggle_mute
 # elif [[ "$1" == "--toggle-mic" ]]; then
 # 	toggle_mic
 else
-  echo $(get_volume)%
+  echo "$(get_volume)"%
 fi

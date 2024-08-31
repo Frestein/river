@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/dash
 
 dir="$HOME/.config/river"
 
@@ -12,35 +12,40 @@ exit_err() {
 }
 
 is_bindir_enabled() {
-  if [[ "${_ignored_bindirs[*]}" =~ "$1" ]]; then
-    return 1
-  fi
+  for ignored in $_ignored_bindirs; do
+    if [ "$ignored" = "$1" ]; then
+      return 1
+    fi
+  done
   return 0
 }
 
 _fuzzel_exec=fuzzel
-if which fuzzel-launch &>/dev/null; then
+if which fuzzel-launch >/dev/null 2>&1; then
   _fuzzel_exec=fuzzel-launch
 fi
 
 _ignored_bindirs=""
-if [ -n "$FUZZEL_IGNORED_BINDIRS" ]; then
-  _ignored_bindirs=($(echo $FUZZEL_IGNORED_BINDIRS | tr ':' '\n' | sort | uniq))
+if [ "$FUZZEL_IGNORED_BINDIRS" != "" ]; then
+  _ignored_bindirs=$(echo "$FUZZEL_IGNORED_BINDIRS" | tr ':' ' ' | sort | uniq)
 fi
 
-_bindirs=($(echo $PATH | tr ':' '\n' | sort | uniq))
+_bindirs=$(echo "$PATH" | tr ':' ' ' | sort | uniq)
 
-_lsdirs=()
-for _bindir in "${_bindirs[@]}"; do
-  if [ -d $_bindir ] && is_bindir_enabled $_bindir; then
-    _lsdirs+=($_bindir)
+_lsdirs=""
+for _bindir in $_bindirs; do
+  if [ -d "$_bindir" ] && is_bindir_enabled "$_bindir"; then
+    _lsdirs="$_lsdirs $_bindir"
   fi
 done
 
-if [ -n "$_lsdirs" ]; then
-  _execfile="$(ls ${_lsdirs[@]} | sort | uniq | sed '/^$/d' | $_fuzzel_exec -d -p '󰜎 ' --config="$dir/fuzzel/fuzzel.ini")"
+if [ "$_lsdirs" != "" ]; then
+  _execfile=$(eval "find $_lsdirs -maxdepth 1 -type f -executable -printf '%f\n'" | sort | uniq | "$_fuzzel_exec" -d -p "󰜎 " --config="$dir/fuzzel/fuzzel.ini")
 
-  [ -n "$_execfile" ] || { echo "No executable was selected!"; exit; }
+  [ "$_execfile" != "" ] || {
+    echo "No executable was selected!"
+    exit
+  }
 
   if which "$_execfile"; then
     exec "$_execfile"
@@ -50,4 +55,3 @@ if [ -n "$_lsdirs" ]; then
 else
   exit_err "Failed finding executables!"
 fi
-
